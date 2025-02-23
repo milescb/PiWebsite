@@ -81,3 +81,5 @@ server {
 ```
 
 Now you have a secure(ish) website! To propagate this with content, download the github repository linked above at `<WEBSITE_LOCAL_DIR_LOCATION>` and edit the enclosed `html`. 
+
+## Interfacing with detectors
