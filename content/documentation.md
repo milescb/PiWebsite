@@ -1,15 +1,20 @@
 ## Overview
 
-In this page, I document the deployment of this webpage. The code that hosts this site is located [on github](https://github.com/milescb/PiWebsite) and the whole website is hosted on a Raspberry Pi Zero 2w running [nginx](https://nginx.org/en/). 
+Below, I document the deployment of this webpage. The code that hosts this site is located [on github](https://github.com/milescb/PiWebsite) and the whole website is hosted on a Raspberry Pi Zero 2w running [nginx](https://nginx.org/en/). 
 
-Hardware used
+Hardware
 
-- Raspberry Pi Zero 2w running raspbian lite (64bit)
-- Sensors?
+- Raspberry Pi Zero 2w
+- Sensors TBD
+
+Software
+
+- raspbian lite OS (64bit)
+- nginx
 
 ## Installing the server
 
-I use `nginx` to host the server. To install, fist update the pi's software and remove apache2 (downloaded by default with raspbian)
+I use `nginx` to host the server. To install, first update the pi's software and remove apache2 (downloaded by default with raspbian)
 
 ```bash
 sudo apt update
@@ -17,7 +22,7 @@ sudo apt upgrade
 sudo apt remove apache2
 ```
 
-Then, download `nginx`, start it, and enable so it's always started when booted up the pi
+Then, download `nginx`, start it, and enable so it's always started when booting up the pi
 
 ```bash
 sudo apt install nginx
@@ -44,7 +49,7 @@ Then, run `certbot`:
 sudo certbot certonly --standalone -d <YOUR_URL>
 ```
 
-To configure you website, edit open the file `/etc/nginx/sites-available/default` and insert the below code, changing `<YOUR_URL>` to the one selected above and `<WEBSITE_LOCAL_DIR_LOCATION>` to the local location you plan on hosting your site. 
+To configure you website, open the file `/etc/nginx/sites-available/default` and replace the current content with the below code, changing `<YOUR_URL>` to the one selected above and `<WEBSITE_LOCAL_DIR_LOCATION>` to the local location you plan on hosting your site from. 
 
 ```
 server {
@@ -75,4 +80,4 @@ server {
 }
 ```
 
-Now you have a secure(ish) website! To propagate this with content, download the github linked above at `<WEBSITE_LOCAL_DIR_LOCATION>` and edit the enclosed `html`. 
+Now you have a secure(ish) website! To propagate this with content, download the github repository linked above at `<WEBSITE_LOCAL_DIR_LOCATION>` and edit the enclosed `html`. 

@@ -67,3 +67,54 @@ video {
     height: auto;
     max-width: 800px;
 }
+
+/* Style for copy buttons */
+.copy-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.copy-button:hover {
+    background-color: #0056b3;
+}
+
+/* Style for ToC */
+#table-of-contents {
+    background: #f8f9fa;
+    padding: 20px;
+    border-left: 4px solid #007bff;
+    border-bottom: none;
+}
+
+#table-of-contents ul {
+    list-style: none;
+    padding-left: 10px;
+    margin: 2pt;
+}
+
+#table-of-contents li {
+    margin-bottom: 0px;
+}
+
+#table-of-contents a {
+    display: block;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    font-size: 18px; 
+    line-height: 0.3; 
+    padding: 1px 0;
+}
+
+#table-of-contents a:hover {
+    text-decoration: underline;
+}
+
