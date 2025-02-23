@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <link rel="stylesheet" href="../styles.css">
+    <title>Documentation</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <script defer src="../js/markdown-loader.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1></h1>
+            <h1>Documentation</h1>
             <nav>
                 <ul>
                     <li><a href="../index.html">Home</a></li>
@@ -20,7 +22,7 @@
         </header>
         <main>
             <h2></h2>
-            <p>This page maybe will contain some information...</p>
+            <div id="markdown-content" data-markdown="../content/documentation.md">Loading...</div>
         </main>
     </div>
 </body>
