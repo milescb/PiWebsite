@@ -5,7 +5,7 @@ Below, I document the deployment of this webpage. The code that hosts this site 
 Hardware
 
 - Raspberry Pi Zero 2w
-- Sensors TBD
+- Sensor: DHT22 for temperature and humidity measurement
 
 Software
 
@@ -30,7 +30,7 @@ sudo systemctl start nginx
 sudo systemctl enable nginx
 ```
 
-### Obtaining an address and exposing this to the internet
+### Configuring a Domain
 
 I used [FreeDNS](https://freedns.afraid.org) to obtain a free domain name and subdomain for this website. To get this running, forward the http port (port 80), and the https port (port 443) on your home router. Then, obtain the IP address of your home router, and configure your selected subdomain with FreeDNS. You can then use this free url in the below configuration!
 
