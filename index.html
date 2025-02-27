@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script src="js/sensor-display.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -19,8 +20,24 @@
             </nav>
         </header>
         <main>
-            <h2></h2>
-            <p>In the future, I'll put a temp and humididty monitor here... perhaps even some other stuff! Who knows.</p>
+            <h2>Current Environment Readings</h2>
+            <div id="sensor-display">
+                <div class="sensor-card">
+                    <h3>Temperature</h3>
+                    <div id="temperature-value" class="sensor-value">--</div>
+                    <div class="sensor-unit">°F</div>
+                </div>
+                <div class="sensor-card">
+                    <h3>Humidity</h3>
+                    <div id="humidity-value" class="sensor-value">--</div>
+                    <div class="sensor-unit">%</div>
+                </div>
+            </div>
+            <div id="last-updated">Last updated: --</div>
+            <div id="history-section">
+                <h3>Temperature & Humidity History</h3>
+                <canvas id="history-chart" width="600" height="250"></canvas>
+            </div>
         </main>
     </div>
 </body>
