@@ -190,7 +190,7 @@ function drawHistoryChart(canvas, readings) {
     ctx.fillStyle = '#FF6B6B';
     ctx.fillRect(10, 10, 20, 10);
     ctx.fillText('Temperature', 35, 18);
-    ctx.fillText(`${minTemp.toFixed(1)}°C - ${maxTemp.toFixed(1)}°C`, 130, 18);
+    ctx.fillText(`${minTemp.toFixed(1)}°F - ${maxTemp.toFixed(1)}°F`, 130, 18);
     
     // Humidity legend
     ctx.fillStyle = '#4ECDC4';
