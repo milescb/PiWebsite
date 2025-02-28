@@ -45,13 +45,22 @@ function displayError() {
 
 // Function to format date and time
 function formatDateTime(date) {
-    return date.toLocaleString();
-}
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  }
 
 // Initialize data refresh
 function initDataRefresh() {
     // Fetch data immediately on page load
     fetchCurrentData();
+    fetchHistoricalData();
     
     // Set up periodic refresh
     setInterval(fetchCurrentData, UPDATE_INTERVAL);
@@ -65,7 +74,8 @@ function formatShortDateTime(date) {
         month: 'numeric',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        hour12: false
     });
 }
 
@@ -92,59 +102,60 @@ function drawHistoryChart(canvas, readings) {
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
     const height = canvas.height;
+    const padding = 50; // Increased space for labels
     
-    // Clear canvas
     ctx.clearRect(0, 0, width, height);
     
-    // Get the last N readings
-    const CHART_POINTS = Math.min(readings.length, 50);
+    const CHART_POINTS = Math.min(readings.length, 288);
     const displayReadings = readings.slice(-CHART_POINTS);
     const pointCount = displayReadings.length;
     
     if (pointCount === 0) return;
     
-    // Find min/max values for scaling
-    let minTemp = Number.MAX_VALUE;
-    let maxTemp = Number.MIN_VALUE;
-    let minHumidity = Number.MAX_VALUE;
-    let maxHumidity = Number.MIN_VALUE;
+    let minTemp = 50, maxTemp = 95, minHumidity = 20, maxHumidity = 100;
     
-    displayReadings.forEach(reading => {
-        minTemp = Math.min(minTemp, reading.temperature);
-        maxTemp = Math.max(maxTemp, reading.temperature);
-        minHumidity = Math.min(minHumidity, reading.humidity);
-        maxHumidity = Math.max(maxHumidity, reading.humidity);
-    });
-    
-    // Add padding to min/max
-    const tempPadding = Math.max(2, (maxTemp - minTemp) * 0.1);
-    const humidityPadding = Math.max(5, (maxHumidity - minHumidity) * 0.1);
-    
-    minTemp -= tempPadding;
-    maxTemp += tempPadding;
-    minHumidity -= humidityPadding;
-    maxHumidity += humidityPadding;
-    
-    // Draw grid and axes
-    ctx.strokeStyle = '#ddd';
+    // Draw grid lines and labels
+    ctx.strokeStyle = '#DDD';
     ctx.lineWidth = 1;
+    ctx.font = '12px Arial';
+    ctx.fillStyle = '#666';
     
-    // Draw horizontal grid lines
-    for (let i = 0; i <= 4; i++) {
-        const y = height - (height * (i / 4));
+    // Y-axis temperature (left)
+    ctx.save();
+    ctx.translate(20, height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Temperature (°F)', 0, 0);
+    ctx.restore();
+    
+    for (let i = 0; i <= 5; i++) {
+        const y = height - padding - (i / 5) * (height - 2 * padding);
+        const tempValue = minTemp + (i / 5) * (maxTemp - minTemp);
+        ctx.fillText(`${tempValue.toFixed(0)}°F`, 30, y + 4);
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
+        ctx.moveTo(padding, y);
+        ctx.lineTo(width - padding, y);
         ctx.stroke();
     }
     
-    // Draw vertical grid lines
-    for (let i = 0; i <= pointCount; i++) {
-        const x = (width / pointCount) * i;
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-        ctx.stroke();
+    // Y-axis humidity (right)
+    ctx.save();
+    ctx.translate(width - 10, height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Humidity (%)', 0, 0);
+    ctx.restore();
+    
+    for (let i = 0; i <= 5; i++) {
+        const y = height - padding - (i / 5) * (height - 2 * padding);
+        const humidityValue = minHumidity + (i / 5) * (maxHumidity - minHumidity);
+        ctx.fillText(`${humidityValue.toFixed(0)}%`, width - 45, y + 4);
+    }
+    
+    // X-axis time
+    ctx.textAlign = 'center';
+    for (let i = 0; i <= 5; i++) {
+        const index = Math.floor((i / 5) * (pointCount - 1));
+        const x = padding + (i / 5) * (width - 2 * padding);
+        ctx.fillText(formatShortDateTime(new Date(displayReadings[index].timestamp)), x, height - 5);
     }
     
     // Draw temperature line
@@ -153,16 +164,11 @@ function drawHistoryChart(canvas, readings) {
     ctx.beginPath();
     
     displayReadings.forEach((reading, index) => {
-        const x = (width / (pointCount - 1)) * index;
-        const y = height - ((reading.temperature - minTemp) / (maxTemp - minTemp) * height);
-        
-        if (index === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
+        const x = padding + (index / (pointCount - 1)) * (width - 2 * padding);
+        const y = height - padding - ((reading.temperature - minTemp) / (maxTemp - minTemp) * (height - 2 * padding));
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
     });
-    
     ctx.stroke();
     
     // Draw humidity line
@@ -171,43 +177,16 @@ function drawHistoryChart(canvas, readings) {
     ctx.beginPath();
     
     displayReadings.forEach((reading, index) => {
-        const x = (width / (pointCount - 1)) * index;
-        const y = height - ((reading.humidity - minHumidity) / (maxHumidity - minHumidity) * height);
-        
-        if (index === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
+        const x = padding + (index / (pointCount - 1)) * (width - 2 * padding);
+        const y = height - padding - ((reading.humidity - minHumidity) / (maxHumidity - minHumidity) * (height - 2 * padding));
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
     });
-    
     ctx.stroke();
-    
-    // Draw legend
-    ctx.font = '12px Arial';
-    
-    // Temperature legend
-    ctx.fillStyle = '#FF6B6B';
-    ctx.fillRect(10, 10, 20, 10);
-    ctx.fillText('Temperature', 35, 18);
-    ctx.fillText(`${minTemp.toFixed(1)}°F - ${maxTemp.toFixed(1)}°F`, 130, 18);
-    
-    // Humidity legend
-    ctx.fillStyle = '#4ECDC4';
-    ctx.fillRect(10, 30, 20, 10);
-    ctx.fillText('Humidity', 35, 38);
-    ctx.fillText(`${minHumidity.toFixed(0)}% - ${maxHumidity.toFixed(0)}%`, 130, 38);
-    
-    // Time range
-    if (pointCount > 1) {
-        const firstTime = new Date(displayReadings[0].timestamp);
-        const lastTime = new Date(displayReadings[pointCount - 1].timestamp);
-        
-        ctx.fillStyle = '#666';
-        ctx.fillText(formatShortDateTime(firstTime), 10, height - 10);
-        ctx.fillText(formatShortDateTime(lastTime), width - 80, height - 10);
-    }
 }
+
+
+
 
 // Function to fetch historical sensor data
 async function fetchHistoricalData() {
@@ -237,5 +216,4 @@ async function fetchHistoricalData() {
 // Start the application when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     initDataRefresh();
-    fetchHistoricalData();
 });
