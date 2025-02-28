@@ -7,6 +7,31 @@ const UPDATE_INTERVAL = 60000; // Update every 60 seconds
 const temperatureElement = document.getElementById('temperature-value');
 const humidityElement = document.getElementById('humidity-value');
 const lastUpdatedElement = document.getElementById('last-updated');
+const canvas = document.getElementById('history-chart');
+
+// Function to format date and time
+function formatDateTime(date) {
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+}
+
+// Function for shorter date/time format for chart
+function formatShortDateTime(date) {
+    return date.toLocaleString(undefined, {
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+}
 
 // Function to fetch current sensor data
 async function fetchCurrentData() {
@@ -21,6 +46,31 @@ async function fetchCurrentData() {
     } catch (error) {
         console.error('Error fetching current data:', error);
         displayError();
+    }
+}
+
+// Function to fetch historical sensor data
+async function fetchHistoricalData() {
+    try {
+        if (!canvas) {
+            console.error('History chart element not found in DOM');
+            return;
+        }
+        
+        const response = await fetch(HISTORY_DATA_URL);
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        if (data && data.readings && data.readings.length > 0) {
+            canvas.width = canvas.width; // reset canvas
+            drawHistoryChart(canvas, data.readings);
+        } else {
+            console.warn('No historical data available');
+        }
+    } catch (error) {
+        console.error('Error fetching historical data:', error);
     }
 }
 
@@ -43,19 +93,6 @@ function displayError() {
     lastUpdatedElement.textContent = 'Unable to fetch sensor data';
 }
 
-// Function to format date and time
-function formatDateTime(date) {
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    });
-  }
-
 // Initialize data refresh
 function initDataRefresh() {
     // Fetch data immediately on page load
@@ -64,20 +101,10 @@ function initDataRefresh() {
     
     // Set up periodic refresh
     setInterval(fetchCurrentData, UPDATE_INTERVAL);
+    setInterval(fetchHistoricalData, UPDATE_INTERVAL);
 }
 
 // For plotting historical data:
-
-// Function for shorter date/time format for chart
-function formatShortDateTime(date) {
-    return date.toLocaleString(undefined, {
-        month: 'numeric',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    });
-}
 
 // Function to ensure the canvas is properly sized for high-DPI displays
 function setupCanvas() {
@@ -112,7 +139,29 @@ function drawHistoryChart(canvas, readings) {
     
     if (pointCount === 0) return;
     
-    let minTemp = 50, maxTemp = 95, minHumidity = 20, maxHumidity = 100;
+    // let minTemp = 50, maxTemp = 95, minHumidity = 20, maxHumidity = 100;
+
+    // Find min/max values for scaling
+    let minTemp = Number.MAX_VALUE;
+    let maxTemp = Number.MIN_VALUE;
+    let minHumidity = Number.MAX_VALUE;
+    let maxHumidity = Number.MIN_VALUE;
+    
+    displayReadings.forEach(reading => {
+        minTemp = Math.min(minTemp, reading.temperature);
+        maxTemp = Math.max(maxTemp, reading.temperature);
+        minHumidity = Math.min(minHumidity, reading.humidity);
+        maxHumidity = Math.max(maxHumidity, reading.humidity);
+    });
+    
+    // // Add padding to min/max
+    // const tempPadding = Math.max(2, (maxTemp - minTemp) * 0.1);
+    // const humidityPadding = Math.max(5, (maxHumidity - minHumidity) * 0.1);
+    
+    // minTemp -= tempPadding;
+    // maxTemp += tempPadding;
+    // minHumidity -= humidityPadding;
+    // maxHumidity += humidityPadding;
     
     // Draw grid lines and labels
     ctx.strokeStyle = '#DDD';
@@ -126,11 +175,12 @@ function drawHistoryChart(canvas, readings) {
     ctx.rotate(-Math.PI / 2);
     ctx.fillText('Temperature (°F)', 0, 0);
     ctx.restore();
-    
+
+    ctx.fillStyle = '#FF6B6B';
     for (let i = 0; i <= 5; i++) {
         const y = height - padding - (i / 5) * (height - 2 * padding);
         const tempValue = minTemp + (i / 5) * (maxTemp - minTemp);
-        ctx.fillText(`${tempValue.toFixed(0)}°F`, 30, y + 4);
+        ctx.fillText(`${tempValue.toFixed(0)}`, 30, y + 4);
         ctx.beginPath();
         ctx.moveTo(padding, y);
         ctx.lineTo(width - padding, y);
@@ -138,19 +188,22 @@ function drawHistoryChart(canvas, readings) {
     }
     
     // Y-axis humidity (right)
+    ctx.fillStyle = '#666';
     ctx.save();
     ctx.translate(width - 10, height / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Humidity (%)', 0, 0);
+    ctx.fillText('Humidity (%)', 20, 0);
     ctx.restore();
     
+    ctx.fillStyle = '#4ECDC4';
     for (let i = 0; i <= 5; i++) {
         const y = height - padding - (i / 5) * (height - 2 * padding);
         const humidityValue = minHumidity + (i / 5) * (maxHumidity - minHumidity);
-        ctx.fillText(`${humidityValue.toFixed(0)}%`, width - 45, y + 4);
+        ctx.fillText(`${humidityValue.toFixed(0)}`, width - 45, y + 4);
     }
     
     // X-axis time
+    ctx.fillStyle = '#666';
     ctx.textAlign = 'center';
     for (let i = 0; i <= 5; i++) {
         const index = Math.floor((i / 5) * (pointCount - 1));
@@ -183,34 +236,6 @@ function drawHistoryChart(canvas, readings) {
         else ctx.lineTo(x, y);
     });
     ctx.stroke();
-}
-
-
-
-
-// Function to fetch historical sensor data
-async function fetchHistoricalData() {
-    try {
-        const canvas = document.getElementById('history-chart');
-        if (!canvas) {
-            console.error('History chart element not found in DOM');
-            return;
-        }
-        
-        const response = await fetch(HISTORY_DATA_URL);
-        if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        if (data && data.readings && data.readings.length > 0) {
-            drawHistoryChart(canvas, data.readings);
-        } else {
-            console.warn('No historical data available');
-        }
-    } catch (error) {
-        console.error('Error fetching historical data:', error);
-    }
 }
 
 // Start the application when DOM is fully loaded
