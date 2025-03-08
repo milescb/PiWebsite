@@ -8,7 +8,6 @@ import board
 
 # Configuration
 DHT_DEVICE = adafruit_dht.DHT22(board.D4)
-GPIO_PIN = 4  
 DATA_DIR = "data"  
 DATA_FILE = os.path.join(DATA_DIR, "sensor_data.json")
 LOG_INTERVAL = 300 # log every five mins 

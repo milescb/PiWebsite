@@ -41,7 +41,7 @@ Finally, we install python dev tools, tmux, and tree:
 ```
 sudo apt install python-dev-is-python3
 sudo apt install tmux
-sudo apt install tmux
+sudo apt install tree
 ```
 
 ## Host Website
@@ -119,3 +119,27 @@ sudo systemctl enable nginx
 Now you have a secure(ish) website! To propagate this with content, download the github repository linked above at `<WEBSITE_LOCAL_DIR_LOCATION>` and edit the enclosed `html`. 
 
 ## Interfacing with detectors
+
+Once you have your dht22 sensor, connect it to the GPIO pins of the pi
+
+- Connect the positive lead to pin 1 (3.3V power)
+- Connect the negative lead to pin 5 (ground)
+- Connect the remaining data lead to pin 7 (GPIO 4)
+
+You can then interface with the detector using the `adafruit_dht` python library as follows:
+
+```python
+import adafruit_dht 
+import board
+
+DHT_DEVICE = adafruit_dht.DHT22(board.D4)
+
+try:
+    temperature = DHT_DEVICE.temperature
+    humidity = DHT_DEVICE.humidity
+    print(f"Temp: {temperature:.1f}°C  Humidity: {humidity:.1f}%")
+except RuntimeError as e:
+    print(f"Reading from DHT22 failed: {e}")
+```
+
+Now you can read off the local temperature and humidity!
