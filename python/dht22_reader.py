@@ -69,9 +69,9 @@ def save_data(reading):
         # Add new reading
         data["readings"].append(reading)
         
-        # Keep only the last 1000 readings to prevent file from growing too large
-        if len(data["readings"]) > 1000:
-            data["readings"] = data["readings"][-1000:]
+        # Limit to 300 readings (corresponds to about a day of data)
+        if len(data["readings"]) > 300:
+            data["readings"] = data["readings"][-300:]
         
         # Save current reading to a separate file for easy access by the web page
         with open(os.path.join(DATA_DIR, "current_reading.json"), 'w') as file:

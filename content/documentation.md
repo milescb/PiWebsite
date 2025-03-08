@@ -12,23 +12,41 @@ Software
 - raspbian lite OS (64bit)
 - nginx
 
-## Installing the server
+## Setup pi
 
-I use `nginx` to host the server. To install, first update the pi's software and remove apache2 (downloaded by default with raspbian)
+Here are a few commands I run to get all the software I need on raspbian. First, make sure everything is up to date:
 
-```bash
+```
 sudo apt update
 sudo apt upgrade
-sudo apt remove apache2
 ```
 
-Then, download `nginx`, start it, and enable so it's always started when booting up the pi
+Then, make ssh keys and configure git to use them:
 
-```bash
-sudo apt install nginx
-sudo systemctl start nginx
-sudo systemctl enable nginx
 ```
+sudo apt install git-all
+ssh-keygen -t ed25519 -C “youremail@domain.com”
+```
+
+I like to use vim when not using vscode. Raspbian comes with a minimal version of vim, so we install the whole thing as well as [vimplug](https://github.com/junegunn/vim-plug): 
+
+```
+sudo apt install vim
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
+
+Finally, we install python dev tools, tmux, and tree:
+
+```
+sudo apt install python-dev-is-python3
+sudo apt install tmux
+sudo apt install tmux
+```
+
+## Host Website
+
+I use `nginx` to host the server. To use this, we first need to configure a few settings. 
 
 ### Configuring a Domain
 
@@ -78,6 +96,24 @@ server {
         try_files $uri $uri/ =404;
     }
 }
+```
+
+### Install Server
+
+To install, first update the pi's software and remove apache2 (downloaded by default with raspbian)
+
+```bash
+sudo apt update
+sudo apt upgrade
+sudo apt remove apache2
+```
+
+Then, download `nginx`, start it, and enable so it's always started when booting up the pi
+
+```bash
+sudo apt install nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
 ```
 
 Now you have a secure(ish) website! To propagate this with content, download the github repository linked above at `<WEBSITE_LOCAL_DIR_LOCATION>` and edit the enclosed `html`. 
