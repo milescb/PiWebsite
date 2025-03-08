@@ -16,21 +16,21 @@ Software
 
 Here are a few commands I run to get all the software I need on raspbian. First, make sure everything is up to date:
 
-```
+```bash
 sudo apt update
 sudo apt upgrade
 ```
 
 Then, make ssh keys and configure git to use them:
 
-```
+```bash
 sudo apt install git-all
 ssh-keygen -t ed25519 -C “youremail@domain.com”
 ```
 
 I like to use vim when not using vscode. Raspbian comes with a minimal version of vim, so we install the whole thing as well as [vimplug](https://github.com/junegunn/vim-plug): 
 
-```
+```bash
 sudo apt install vim
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -38,7 +38,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 
 Finally, we install python dev tools, tmux, and tree:
 
-```
+```bash
 sudo apt install python-dev-is-python3
 sudo apt install tmux
 sudo apt install tree
@@ -56,14 +56,14 @@ I used [FreeDNS](https://freedns.afraid.org) to obtain a free domain name and su
 
 Install `certbot` to deal with obtaining an ssl certificate
 
-```
+```bash
 sudo apt update
 sudo apt install certbot python3-certbot-nginx
 ```
 
 Then, run `certbot`:
 
-```
+```bash
 sudo certbot certonly --standalone -d <YOUR_URL>
 ```
 
