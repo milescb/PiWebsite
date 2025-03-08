@@ -44,6 +44,21 @@ sudo apt install tmux
 sudo apt install tree
 ```
 
+### Remote access with nord meshnet
+
+First, install `nordvpn` and login:
+
+```bash
+sh <(curl -sSf https://downloads.nordcdn.com/apps/linux/install.sh)
+sudo nordvpn login --token <your_token>
+```
+
+Then, enable meshnet via
+
+```bash
+sudo nordvpn set meshnet on
+```
+
 ## Host Website
 
 I use `nginx` to host the server. To use this, we first need to configure a few settings. 
