@@ -4,13 +4,17 @@ Below, I document the deployment of this webpage. The code that hosts this site 
 
 Hardware
 
-- Raspberry Pi Zero 2w
-- Sensor: DHT22 for temperature and humidity measurement
+- Main computer: [Raspberry Pi Zero 2w](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/)
+- Temperature and Humidity Sensor: [DHT22](https://www.amazon.com/dp/B0CN5PN225?ref=ppx_yo2ov_dt_b_fed_asin_title)
+- Microcontroller: [NodeMCU ESP8266](https://store-usa.arduino.cc/products/nodemcu-esp8266?srsltid=AfmBOoqXQniBXi6xgaQYNjxUDYrIKuJDMJ8GJLIlXFsOszKOACP5djWs)
+- Capacitive moisture sensor: [v1.2](https://www.amazon.com/Stemedu-Capacitive-Corrosion-Resistant-Electronic/dp/B0BTHL6M19)
 
 Software
 
-- raspbian lite OS (64bit)
-- nginx
+- Raspbian lite OS (64bit)
+- Website engine: [nginx](https://nginx.org)
+- Message broker: [Mosquitto](https://mosquitto.org)
+- Database: [SQLite](https://www.sqlite.org)
 
 ## Setup pi
 
@@ -59,6 +63,8 @@ Then, enable meshnet via
 sudo nordvpn set meshnet on
 ```
 
+Note: this takes up a considerable amount of the pi's idle compute. By default, I have this set off and can decide to set on if I need access remotely. Alternatively, you can forward the ssh port (or please choose a non-default port) but this can open your pi up to attempted hacks. 
+
 ## Host Website
 
 I use `nginx` to host the server. To use this, we first need to configure a few settings. 
@@ -99,6 +105,9 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
 
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
     server_name <YOUR_URL>;
 
     ssl_certificate /etc/letsencrypt/live/<YOUR_URL>/fullchain.pem;
@@ -133,7 +142,7 @@ sudo systemctl enable nginx
 
 Now you have a secure(ish) website! To propagate this with content, download the github repository linked above at `<WEBSITE_LOCAL_DIR_LOCATION>` and edit the enclosed `html`. 
 
-## Interfacing with detectors
+## Interface with DHT22
 
 Once you have your dht22 sensor, connect it to the GPIO pins of the pi
 
@@ -158,3 +167,32 @@ except RuntimeError as e:
 ```
 
 Now you can read off the local temperature and humidity!
+
+## Interface with Moisture sensor
+
+## Networking with Mosquitto
+
+First, install the software:
+
+```bash
+sudo apt update
+sudo apt install mosquitto mosquitto-clients
+```
+
+Then, enable and start to start the process at boot:
+
+```bash
+sudo systemctl enable mosquitto
+sudo systemctl start mosquitto
+```
+
+Finally, test that everything is running with: `systemctl status mosquitto`. 
+
+## Database management
+
+I use `SQLite` for database management. To install, run
+
+```bash
+sudo apt update
+sudo apt install sqlite3
+```
