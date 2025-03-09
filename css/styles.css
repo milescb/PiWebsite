@@ -3,7 +3,7 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color:rgb(7, 74, 35);
 }
 
 .container {
@@ -15,9 +15,10 @@ body {
     border-radius: 5px;
 }
 
+/* #c5b09c; */
 header {
-    background-color: #333;
-    color: #fff;
+    background-color: #72a178;
+    color: #3c2c1d;
     padding: 1rem;
     text-align: center;
 }
@@ -224,11 +225,11 @@ pre {
 }
 
 .sensor-card {
-    background-color: #f5f5f5;
+    background-color: #cddfcfdc;
     border-radius: 8px;
     padding: 1.5rem;
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(65, 37, 8, 0.1);
     width: 45%;
     max-width: 200px;
 }
