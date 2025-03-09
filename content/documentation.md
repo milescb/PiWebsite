@@ -44,7 +44,7 @@ sudo apt install tmux
 sudo apt install tree
 ```
 
-### Remote access with nord meshnet
+### Remote access with meshnet
 
 First, install `nordvpn` and login:
 
