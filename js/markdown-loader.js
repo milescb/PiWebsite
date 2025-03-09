@@ -67,6 +67,7 @@ async function loadMarkdown() {
         
         addCopyButtons();
         generateTableOfContents();
+        addSkipToTopLinks();
     } catch (error) {
         console.error("Error loading Markdown file:", error);
         markdownContainer.innerHTML = "<p>Failed to load content.</p>";
@@ -132,7 +133,7 @@ function generateTableOfContents() {
     const tocContainer = document.getElementById("table-of-contents");
     if (!tocContainer) return;
     
-    const headers = document.querySelectorAll("#markdown-content h2, #markdown-content h3");
+    const headers = document.querySelectorAll("#markdown-content h2");
     if (headers.length === 0) return;
     
     const ul = document.createElement("ul");
@@ -146,13 +147,75 @@ function generateTableOfContents() {
         
         const li = document.createElement("li");
         // Add different styling based on header level
-        const headerClass = header.tagName === "H2" ? "toc-h2" : "toc-h3";
+        const headerClass = header.tagName === "H2";
         li.className = headerClass;
         li.innerHTML = `<a href="#${id}">${header.innerText}</a>`;
         ul.appendChild(li);
     });
     
     tocContainer.appendChild(ul);
+}
+
+// Add "Skip to Top" links to all header blocks
+function addSkipToTopLinks() {
+    // Add an ID to the top of the page if it doesn't exist
+    if (!document.getElementById("top")) {
+        const topAnchor = document.createElement("div");
+        topAnchor.id = "top";
+        document.querySelector("#markdown-content").prepend(topAnchor);
+    }
+    
+    // Find first two major headers
+    const headers = document.querySelectorAll("#markdown-content h1, #markdown-content h2");
+    
+    headers.forEach((header) => {
+        // Create a container for the header content and the top link
+        const headerContainer = document.createElement("div");
+        headerContainer.style.display = "flex";
+        headerContainer.style.justifyContent = "space-between";
+        headerContainer.style.alignItems = "center";
+        headerContainer.style.width = "100%";
+        
+        // Create the "Skip to Top" link
+        const topLink = document.createElement("a");
+        topLink.href = "#top";
+        topLink.innerText = "↑ Top";
+        topLink.className = "skip-to-top";
+        
+        // Style the link
+        topLink.style.fontSize = "0.8em";
+        topLink.style.color = "#0366d6";
+        topLink.style.textDecoration = "none";
+        topLink.style.fontWeight = "normal";
+        topLink.style.opacity = "0.7";
+        topLink.style.transition = "opacity 0.2s";
+        topLink.style.marginLeft = "auto"; // Push to the right
+        
+        // Add hover effect
+        topLink.addEventListener("mouseenter", () => {
+            topLink.style.opacity = "1";
+            topLink.style.textDecoration = "underline";
+        });
+        
+        topLink.addEventListener("mouseleave", () => {
+            topLink.style.opacity = "0.7";
+            topLink.style.textDecoration = "none";
+        });
+        
+        // Preserve the original header content by moving all children to the container
+        // Clone the children and then move them
+        const headerContentSpan = document.createElement("span");
+        while (header.firstChild) {
+            headerContentSpan.appendChild(header.firstChild);
+        }
+        
+        // Add the header content and top link to the container
+        headerContainer.appendChild(headerContentSpan);
+        headerContainer.appendChild(topLink);
+        
+        // Append the container to the header
+        header.appendChild(headerContainer);
+    });
 }
 
 // Automatically load markdown on page load
