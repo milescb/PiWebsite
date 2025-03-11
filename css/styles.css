@@ -10,8 +10,8 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0);
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgb(184, 69, 20);
     border-radius: 5px;
 }
 
@@ -39,13 +39,13 @@ nav ul li {
 }
 
 nav ul li a {
-    color: #fff;
+    color: #ffceb4;
     text-decoration: none;
     padding: 5px 10px;
 }
 
 nav ul li a.active {
-    background-color: #555;
+    background-color: #cb6425;
     border-radius: 3px;
 }
 
@@ -54,7 +54,7 @@ main {
 }
 
 h2 {
-    color: #333;
+    color: #d3662b;
 }
 
 .video-container {

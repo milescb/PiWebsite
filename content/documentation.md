@@ -73,6 +73,10 @@ I use `nginx` to host the server. To use this, we first need to configure a few 
 
 I used [FreeDNS](https://freedns.afraid.org) to obtain a free domain name and subdomain for this website. To get this running, forward the http port (port 80), and the https port (port 443) on your home router. Then, obtain the IP address of your home router, and configure your selected subdomain with FreeDNS. You can then use this free url in the below configuration!
 
+#### Warning!
+
+Exposing ports on your home internet can expose your device to attacks. In order to mitgate these, ensure ssh is only enabled through ssh keys and do not forward port 22. Additionally, installing `fail2ban` and configuring a jail for the forwarded ports, as well as creating a firewall, for instance with `ufw`, provide additional security. 
+
 ### Configuring ssl
 
 Install `certbot` to deal with obtaining an ssl certificate
