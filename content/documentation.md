@@ -168,6 +168,8 @@ try:
     print(f"Temp: {temperature:.1f}°C  Humidity: {humidity:.1f}%")
 except RuntimeError as e:
     print(f"Reading from DHT22 failed: {e}")
+finally:
+    DHT_DEVICE.exit()
 ```
 
 Now you can read off the local temperature and humidity!
