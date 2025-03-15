@@ -36,9 +36,10 @@ def get_historical_sensor_data():
         else:
             # Default to 24 hours
             cutoff_time = now - datetime.timedelta(hours=24)
-        
+            
         # Format timestamp for SQLite comparison
-        cutoff_timestamp = cutoff_time.isoformat()
+        # Convert to string in the format that matches your database
+        cutoff_timestamp = cutoff_time.strftime('%Y-%m-%d %H:%M:%S')
         
         # Connect to database and get data
         conn = sqlite3.connect(DB_FILE)
@@ -49,14 +50,14 @@ def get_historical_sensor_data():
         if time_range in ['7d', '30d']:
             # For longer periods, group by hour
             cursor.execute('''
-                SELECT 
+                SELECT
                     sensor_type,
                     location,
-                    strftime('%Y-%m-%dT%H:00:00', timestamp) as timestamp,
+                    strftime('%Y-%m-%d %H:%M:%S', timestamp) as timestamp,
                     AVG(value) as value
                 FROM sensor_data
                 WHERE timestamp >= ?
-                GROUP BY sensor_type, location, strftime('%Y-%m-%dT%H:00:00', timestamp)
+                GROUP BY sensor_type, location, strftime('%Y-%m-%d %H', timestamp)
                 ORDER BY timestamp
             ''', (cutoff_timestamp,))
         else:
@@ -67,15 +68,13 @@ def get_historical_sensor_data():
                 WHERE timestamp >= ?
                 ORDER BY timestamp
             ''', (cutoff_timestamp,))
-        
+            
         data = cursor.fetchall()
         conn.close()
         
         return jsonify(data)
-    
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-if __name__ == '__main__':    
+if __name__ == '__main__':
     app.run(debug=False, host="0.0.0.0", port=5000)
