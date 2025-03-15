@@ -238,22 +238,33 @@ function setupCanvas() {
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     
+    // Set the canvas dimensions to match its CSS size multiplied by device pixel ratio
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
     
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
     
+    // Set the CSS dimensions
     canvas.style.width = rect.width + 'px';
     canvas.style.height = rect.height + 'px';
+    
+    return { width: rect.width, height: rect.height, ctx };
 }
 
 // Function to draw history chart
 function drawHistoryChart(canvas, data) {
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-    const padding = 50; // Increased space for labels
+    // Get properly sized canvas and context
+    const { width, height, ctx } = setupCanvas() || {};
+    if (!ctx) return;
+    
+    // Increase padding for better label positioning
+    const padding = {
+        left: 70,    // More space for temperature labels
+        right: 70,   // More space for humidity labels
+        top: 70,     // Space for title and legend
+        bottom: 60   // Space for x-axis labels
+    };
     
     ctx.clearRect(0, 0, width, height);
     
@@ -261,114 +272,145 @@ function drawHistoryChart(canvas, data) {
     
     if (pointCount === 0) return;
     
-    // Filter out null values and find min/max values for scaling
+    // Filter out null values
     const allTemps = [...data.tempLivingRoom, ...data.tempBedroom].filter(v => v !== null);
     const allHumidities = [...data.humidityLivingRoom, ...data.humidityBedroom].filter(v => v !== null);
     
     if (allTemps.length === 0 || allHumidities.length === 0) return;
     
-    let minTemp = Math.min(...allTemps);
-    let maxTemp = Math.max(...allTemps);
-    let minHumidity = Math.min(...allHumidities);
-    let maxHumidity = Math.max(...allHumidities);
+    // Fixed temperature and humidity ranges as in your original code
+    let minTemp = 50;
+    let maxTemp = 100;
+    let minHumidity = 20;
+    let maxHumidity = 90;
     
-    // Add padding to min/max
-    const tempPadding = Math.max(2, (maxTemp - minTemp) * 0.1);
-    const humidityPadding = Math.max(5, (maxHumidity - minHumidity) * 0.1);
+    // Calculate chart area
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
     
-    minTemp = Math.max(0, minTemp - tempPadding);
-    maxTemp += tempPadding;
-    minHumidity = Math.max(0, minHumidity - humidityPadding);
-    maxHumidity = Math.min(100, maxHumidity + humidityPadding);
+    // Draw title
+    ctx.font = 'bold 16px Arial';
+    ctx.fillStyle = '#333';
+    ctx.textAlign = 'center';
+    ctx.fillText('Temperature and Humidity History', width / 2, 25);
     
     // Draw grid lines and labels
     ctx.strokeStyle = '#DDD';
     ctx.lineWidth = 1;
     ctx.font = '12px Arial';
-    ctx.fillStyle = '#666';
     
     // Y-axis temperature (left)
     ctx.save();
     ctx.translate(20, height / 2);
     ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#666';
+    ctx.textAlign = 'center';
     ctx.fillText('Temperature (°F)', 0, 0);
     ctx.restore();
 
+    // Temperature grid lines
+    ctx.textAlign = 'right';
     ctx.fillStyle = '#FF6B6B'; // Red for temperature
     for (let i = 0; i <= 5; i++) {
-        const y = height - padding - (i / 5) * (height - 2 * padding);
+        const y = height - padding.bottom - (i / 5) * chartHeight;
         const tempValue = minTemp + (i / 5) * (maxTemp - minTemp);
-        ctx.fillText(`${tempValue.toFixed(0)}`, 30, y + 4);
+        
+        // Draw temperature label
+        ctx.fillText(`${tempValue.toFixed(0)}`, padding.left - 10, y + 4);
+        
+        // Draw horizontal grid line
         ctx.beginPath();
-        ctx.moveTo(padding, y);
-        ctx.lineTo(width - padding, y);
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(width - padding.right, y);
         ctx.stroke();
     }
     
     // Y-axis humidity (right)
-    ctx.fillStyle = '#666';
     ctx.save();
-    ctx.translate(width - 10, height / 2);
+    ctx.translate(width - 20, height / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Humidity (%)', 20, 0);
+    ctx.fillStyle = '#666';
+    ctx.textAlign = 'center';
+    ctx.fillText('Humidity (%)', 0, 0);
     ctx.restore();
     
+    // Humidity grid lines
+    ctx.textAlign = 'left';
     ctx.fillStyle = '#4ECDC4'; // Teal for humidity
     for (let i = 0; i <= 5; i++) {
-        const y = height - padding - (i / 5) * (height - 2 * padding);
+        const y = height - padding.bottom - (i / 5) * chartHeight;
         const humidityValue = minHumidity + (i / 5) * (maxHumidity - minHumidity);
-        ctx.fillText(`${humidityValue.toFixed(0)}`, width - 45, y + 4);
+        ctx.fillText(`${humidityValue.toFixed(0)}`, width - padding.right + 10, y + 4);
     }
     
-    // X-axis time
+    // X-axis time labels
     ctx.fillStyle = '#666';
     ctx.textAlign = 'center';
     
-    // Display a subset of timestamps to avoid overcrowding
-    const timestampInterval = Math.max(1, Math.floor(pointCount / 6));
-    for (let i = 0; i < pointCount; i += timestampInterval) {
-        const x = padding + (i / (pointCount - 1 || 1)) * (width - 2 * padding);
-        ctx.fillText(formatShortDateTime(new Date(data.timestamps[i])), x, height - 5);
-    }
+    // Calculate optimal number of timestamp labels to avoid overcrowding
+    const maxLabels = Math.floor(chartWidth / 100); // Minimum 100px between labels
+    const timestampInterval = Math.max(1, Math.ceil(pointCount / maxLabels));
     
+    ctx.save();
+    for (let i = 0; i < pointCount; i += timestampInterval) {
+        const x = padding.left + (i / (pointCount - 1 || 1)) * chartWidth;
+        
+        // Draw vertical grid line
+        ctx.beginPath();
+        ctx.moveTo(x, height - padding.bottom);
+        ctx.lineTo(x, padding.top);
+        ctx.stroke();
+        
+        // Format and draw the timestamp
+        const timestamp = formatShortDateTime(new Date(data.timestamps[i]));
+        ctx.translate(x, height - padding.bottom + 15);
+        // ctx.rotate(Math.PI / 4); // Angle the text to avoid overlap
+        ctx.fillText(timestamp, 0, 0);
+        // ctx.rotate(-Math.PI / 4);
+        ctx.translate(-x, -(height - padding.bottom + 15));
+    }
+    ctx.restore();
+    
+    // Draw data lines with improved coordinates
     // Draw living room temperature line (darker red)
-    drawLine(ctx, data.timestamps, data.tempLivingRoom, '#FF3333', width, height, padding, minTemp, maxTemp);
+    drawLine(ctx, data.timestamps, data.tempLivingRoom, '#FF3333', width, height, padding, chartWidth, chartHeight, minTemp, maxTemp);
     
     // Draw bedroom temperature line (lighter red)
-    drawLine(ctx, data.timestamps, data.tempBedroom, '#FF9999', width, height, padding, minTemp, maxTemp);
+    drawLine(ctx, data.timestamps, data.tempBedroom, '#FF9999', width, height, padding, chartWidth, chartHeight, minTemp, maxTemp);
     
     // Draw living room humidity line (darker blue)
-    drawLine(ctx, data.timestamps, data.humidityLivingRoom, '#3399FF', width, height, padding, minHumidity, maxHumidity);
+    drawLine(ctx, data.timestamps, data.humidityLivingRoom, '#3399FF', width, height, padding, chartWidth, chartHeight, minHumidity, maxHumidity);
     
     // Draw bedroom humidity line (lighter blue)
-    drawLine(ctx, data.timestamps, data.humidityBedroom, '#99CCFF', width, height, padding, minHumidity, maxHumidity);
+    drawLine(ctx, data.timestamps, data.humidityBedroom, '#99CCFF', width, height, padding, chartWidth, chartHeight, minHumidity, maxHumidity);
     
     // Add legend
     drawLegend(ctx, width, height);
 }
 
 // Helper function to draw a line on the chart, handling null values
-function drawLine(ctx, timestamps, values, color, width, height, padding, min, max) {
+function drawLine(ctx, timestamps, values, color, width, height, padding, chartWidth, chartHeight, min, max) {
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     
     const pointCount = timestamps.length;
     let pathStarted = false;
     
+    ctx.beginPath();
     values.forEach((value, index) => {
         if (value === null) {
             if (pathStarted) {
                 ctx.stroke();
+                ctx.beginPath();
                 pathStarted = false;
             }
             return;
         }
         
-        const x = padding + (index / (pointCount - 1 || 1)) * (width - 2 * padding);
-        const y = height - padding - ((value - min) / (max - min) * (height - 2 * padding));
+        const x = padding.left + (index / (pointCount - 1 || 1)) * chartWidth;
+        const y = height - padding.bottom - ((value - min) / (max - min) * chartHeight);
         
         if (!pathStarted) {
-            ctx.beginPath();
             ctx.moveTo(x, y);
             pathStarted = true;
         } else {
@@ -383,15 +425,24 @@ function drawLine(ctx, timestamps, values, color, width, height, padding, min, m
 
 // Function to draw the chart legend
 function drawLegend(ctx, width, height) {
-    const legendX = width / 2 - 150;
-    const legendY = 20;
+    const legendX = width / 2 - 170;
+    const legendY = 35;
     const itemHeight = 20;
+    const itemWidth = 150;
+    
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'left';
+    
+    // Background for legend
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillRect(legendX - 10, legendY - 5, 360, itemHeight * 2 + 10);
+    ctx.strokeStyle = '#DDD';
+    ctx.strokeRect(legendX - 10, legendY - 5, 360, itemHeight * 2 + 10);
     
     // Living Room Temp
     ctx.fillStyle = '#FF3333';
     ctx.fillRect(legendX, legendY, 15, 15);
     ctx.fillStyle = '#333';
-    ctx.textAlign = 'left';
     ctx.fillText('Living Room Temp', legendX + 20, legendY + 12);
     
     // Bedroom Temp
@@ -402,29 +453,15 @@ function drawLegend(ctx, width, height) {
     
     // Living Room Humidity
     ctx.fillStyle = '#3399FF';
-    ctx.fillRect(legendX + 150, legendY, 15, 15);
+    ctx.fillRect(legendX + itemWidth, legendY, 15, 15);
     ctx.fillStyle = '#333';
-    ctx.fillText('Living Room Humidity', legendX + 170, legendY + 12);
+    ctx.fillText('Living Room Humidity', legendX + itemWidth + 20, legendY + 12);
     
     // Bedroom Humidity
     ctx.fillStyle = '#99CCFF';
-    ctx.fillRect(legendX + 150, legendY + itemHeight, 15, 15);
+    ctx.fillRect(legendX + itemWidth, legendY + itemHeight, 15, 15);
     ctx.fillStyle = '#333';
-    ctx.fillText('Bedroom Humidity', legendX + 170, legendY + itemHeight + 12);
-}
-
-// Time range selector setup
-function setupTimeRangeSelector() {
-    const timeRangeSelect = document.getElementById('time-range-selector');
-    if (!timeRangeSelect) return;
-    
-    timeRangeSelect.addEventListener('change', async () => {
-        const selectedRange = timeRangeSelect.value;
-        const historicalData = await fetchHistoricalSensorData(selectedRange);
-        if (historicalData) {
-            prepareAndDrawHistoricalData(historicalData);
-        }
-    });
+    ctx.fillText('Bedroom Humidity', legendX + itemWidth + 20, legendY + itemHeight + 12);
 }
 
 // Start the application when DOM is fully loaded
