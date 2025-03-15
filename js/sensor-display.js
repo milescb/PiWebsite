@@ -303,11 +303,19 @@ function drawHistoryChart(canvas, data) {
     
     if (allTemps.length === 0 || allHumidities.length === 0) return;
     
-    // Fixed temperature and humidity ranges as in your original code
-    let minTemp = 50;
-    let maxTemp = 100;
-    let minHumidity = 20;
-    let maxHumidity = 90;
+    let minTemp = Math.min(...allTemps);
+    let maxTemp = Math.max(...allTemps);
+    let minHumidity = Math.min(...allHumidities);
+    let maxHumidity = Math.max(...allHumidities);
+    
+    // Add padding to min/max
+    const tempPadding = Math.max(2, (maxTemp - minTemp) * 0.1);
+    const humidityPadding = Math.max(5, (maxHumidity - minHumidity) * 0.1);
+    
+    minTemp = Math.max(0, minTemp - tempPadding);
+    maxTemp += tempPadding;
+    minHumidity = Math.max(0, minHumidity - humidityPadding);
+    maxHumidity = Math.min(100, maxHumidity + humidityPadding);
     
     // Calculate chart area
     const chartWidth = width - padding.left - padding.right;
@@ -335,7 +343,7 @@ function drawHistoryChart(canvas, data) {
 
     // Temperature grid lines
     ctx.textAlign = 'right';
-    ctx.fillStyle = '#FF6B6B'; // Red for temperature
+    // ctx.fillStyle = '#FF6B6B'; // Red for temperature
     for (let i = 0; i <= 5; i++) {
         const y = height - padding.bottom - (i / 5) * chartHeight;
         const tempValue = minTemp + (i / 5) * (maxTemp - minTemp);
@@ -361,7 +369,7 @@ function drawHistoryChart(canvas, data) {
     
     // Humidity grid lines
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#4ECDC4'; // Teal for humidity
+    // ctx.fillStyle = '#4ECDC4'; // Teal for humidity
     for (let i = 0; i <= 5; i++) {
         const y = height - padding.bottom - (i / 5) * chartHeight;
         const humidityValue = minHumidity + (i / 5) * (maxHumidity - minHumidity);
