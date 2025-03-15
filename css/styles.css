@@ -11,14 +11,13 @@ body {
     margin: 0 auto;
     padding: 20px;
     background-color: #ffffff;
-    box-shadow: 0 0 10px rgb(184, 69, 20);
+    box-shadow: 0 0 3px rgb(0, 0, 0);
     border-radius: 5px;
 }
 
-/* #c5b09c; */
 header {
     background-color: #72a178;
-    color: #3c2c1d;
+    color: #d8177b;
     padding: 1rem;
     text-align: center;
 }
@@ -39,13 +38,13 @@ nav ul li {
 }
 
 nav ul li a {
-    color: #ffceb4;
+    color: #fec3fe;
     text-decoration: none;
     padding: 5px 10px;
 }
 
 nav ul li a.active {
-    background-color: #cb6425;
+    background-color: #d56097;
     border-radius: 3px;
 }
 
@@ -54,240 +53,5 @@ main {
 }
 
 h2 {
-    color: #d3662b;
-}
-
-.video-container {
-    max-width: 100%;
-    margin: 20px auto;
-    text-align: center;
-}
-
-video {
-    width: 100%;
-    height: auto;
-    max-width: 800px;
-}
-
-/* Style for copy buttons */
-.copy-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    font-size: 0.8em;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.copy-button:hover {
-    background-color: #0056b3;
-}
-
-/* Markdown content */
-#markdown-content {
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-#markdown-content h1, 
-#markdown-content h2, 
-#markdown-content h3, 
-#markdown-content h4, 
-#markdown-content h5, 
-#markdown-content h6 {
-    margin-top: 24px;
-    margin-bottom: 16px;
-    font-weight: 600;
-    line-height: 1.25;
-}
-
-#markdown-content h1 {
-    font-size: 2em;
-    border-bottom: 1px solid #eaecef;
-    padding-bottom: 0.3em;
-}
-
-#markdown-content h2 {
-    font-size: 1.5em;
-    border-bottom: 1px solid #eaecef;
-    padding-bottom: 0.3em;
-}
-
-#markdown-content a {
-    color: #0366d6;
-    text-decoration: none;
-}
-
-#markdown-content a:hover {
-    text-decoration: underline;
-}
-
-/* Table styles */
-#markdown-content table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 16px 0;
-    display: block;
-    overflow-x: auto;
-}
-
-#markdown-content table th,
-#markdown-content table td {
-    padding: 6px 13px;
-    border: 1px solid #dfe2e5;
-}
-
-#markdown-content table tr {
-    background-color: #fff;
-}
-
-#markdown-content table tr:nth-child(2n) {
-    background-color: #f6f8fa;
-}
-
-#markdown-content table th {
-    font-weight: 600;
-    background-color: #f6f8fa;
-}
-
-/* GitHub-like code block styling */
-pre {
-    background-color: #f6f8fa;
-    border-radius: 6px;
-    padding: 16px;
-    overflow: auto;
-    margin-bottom: 16px;
-}
-
-code {
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-    font-size: 85%;
-    padding: 0.2em 0.4em;
-    margin: 0;
-    background-color: rgba(175, 184, 193, 0.2);
-    border-radius: 3px;
-}
-
-pre code {
-    padding: 0;
-    margin: 0;
-    background-color: transparent;
-    border-radius: 0;
-    font-size: 100%;
-}
-
-/* Fix for the copy button positioning */
-pre {
-    position: relative;
-}
-
-/* Style for ToC */
-#table-of-contents {
-    background: #f8f9fa;
-    padding: 20px;
-    border-left: 4px solid #a2abb5;
-    border-bottom: none;
-}
-
-#table-of-contents ul {
-    list-style: none;
-    padding-left: 10px;
-    margin: 2pt;
-}
-
-#table-of-contents li {
-    margin-bottom: 0px;
-}
-
-#table-of-contents a {
-    display: block;
-    text-decoration: none;
-    color: #5b626a;
-    font-weight: bold;
-    font-size: 18px; 
-    line-height: 0.3; 
-    padding: 1px 0;
-}
-
-#table-of-contents a:hover {
-    text-decoration: underline;
-}
-
-/* Sensor display styling */
-#sensor-display {
-    display: flex;
-    justify-content: space-around;
-    margin: 2rem 0;
-}
-
-.sensor-card {
-    background-color: #cddfcfdc;
-    border-radius: 8px;
-    padding: 1.5rem;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(65, 37, 8, 0.1);
-    width: 45%;
-    max-width: 200px;
-}
-
-.sensor-value {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 0.5rem 0;
-}
-
-.sensor-unit {
-    font-size: 1rem;
-    color: #666;
-}
-
-#last-updated {
-    text-align: center;
-    color: #777;
-    font-style: italic;
-    margin-bottom: 2rem;
-}
-
-#history-section {
-    margin-top: 2rem;
-    padding: 1rem;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-#history-section h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    text-align: center;
-}
-
-#history-chart {
-    display: block;
-    width: 100%;
-    height: 300px;
-    background-color: white;
-    border-radius: 4px;
-    border: 1px solid #eee;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    #sensor-display {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .sensor-card {
-        width: 80%;
-        margin-bottom: 1rem;
-    }
-    
-    #history-chart {
-        height: 300px;
-    }
+    color: #d8177b;
 }
