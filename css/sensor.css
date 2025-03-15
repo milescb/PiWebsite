@@ -12,18 +12,50 @@
     text-align: center;
     box-shadow: 0 2px 5px rgba(65, 37, 8, 0.1);
     width: 45%;
-    max-width: 200px;
+    max-width: 300px;
+}
+
+.sensor-card h3 {
+    margin-top: 0;
+    margin-bottom: 1.2rem;
+    color: #2c3e50;
+    font-size: 1.4rem;
+}
+
+.room-readings {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.room-reading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.8rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+}
+
+.room-label {
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    flex: 1;
 }
 
 .sensor-value {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: bold;
-    margin: 0.5rem 0;
+    margin: 0 0.5rem;
+    color: #2c3e50;
 }
 
 .sensor-unit {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #666;
+    width: 25px;
+    text-align: left;
 }
 
 #last-updated {
@@ -33,42 +65,80 @@
     margin-bottom: 2rem;
 }
 
-#history-section {
+  /* Chart styling */
+  .chart-container {
     margin-top: 2rem;
-    padding: 1rem;
+    padding: 1.5rem;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-#history-section h3 {
-    margin-top: 0;
+  }
+  
+  .chart-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     margin-bottom: 1rem;
-    text-align: center;
-}
-
-#history-chart {
+    padding-bottom: 0.8rem;
+  }
+  
+  .chart-controls label {
+    margin-right: 10px;
+    color: #333;
+  }
+  
+  #time-range-selector {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  #time-range-selector:focus {
+    outline: none;
+    border-color: #aaa;
+  }
+  
+  #history-chart {
     display: block;
     width: 100%;
-    height: 300px;
+    height: 350px;
     background-color: white;
     border-radius: 4px;
     border: 1px solid #eee;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
+    margin-top: 10px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
     #sensor-display {
-        flex-direction: column;
-        align-items: center;
+      flex-direction: column;
+      align-items: center;
     }
     
     .sensor-card {
-        width: 80%;
-        margin-bottom: 1rem;
+      width: 80%;
+      margin-bottom: 1rem;
     }
     
     #history-chart {
-        height: 300px;
+      height: 300px;
     }
-}
+    
+    .chart-controls {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .room-reading {
+      padding: 0.4rem 0.6rem;
+    }
+    
+    .sensor-value {
+      font-size: 1.6rem;
+    }
+  }
