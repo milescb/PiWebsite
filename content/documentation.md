@@ -178,6 +178,28 @@ Now you can read off the local temperature and humidity!
 
 The capacitive moisture sensor linked above reads off an analogue signal which cannot be read on the pi without an analogue to digital converter. I will not detail this, and instead will simply describe how this is done with the interface to the nodemcu device. 
 
+```c
+#include <Arduino.h>
+
+#define MOISTURE_PIN A0  // Analog pin for moisture sensor
+
+void setup() {
+    Serial.begin(115200);
+}
+
+void loop() {
+    // Read temperature and humidity from DHT22
+    float temperature = dht.readTemperature();
+    float humidity = dht.readHumidity();
+
+    // Print soil moisture value
+    Serial.print("Soil Moisture: ");
+    Serial.println(moistureValue);
+
+    delay(2000);  // Wait 2 seconds before next read
+}
+```
+
 ## Networking with Mosquitto
 
 First, install the software:
