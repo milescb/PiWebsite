@@ -271,3 +271,50 @@ I use `SQLite` for database management. To install, run
 sudo apt update
 sudo apt install sqlite3
 ```
+
+## Login Display
+
+Edit `/etc/motd` and put your login message there:
+
+```
+
+     /\                /\                /\
+    ( /   @ @    ()   ( /   @ @    ()   ( /   @ @    ()
+     \\ __| |__  /     \\ __| |__  /     \\ __| |__  /
+      \/   "   \/       \/   "   \/       \/   "   \/
+     /-|       |-\     /-|       |-\     /-|       |-\
+    / /-\     /-\ \   / /-\     /-\ \   / /-\     /-\ \
+     / /-`---'-\ \     / /-`---'-\ \     / /-`---'-\ \
+      /         \       /         \       /         \
+
+```
+
+Then, to display current readings edit the file `/etc/update-motd.d/90-system-info` with the contents:
+
+```
+#!/bin/bash
+
+# Get system information
+LOAD=$(cat /proc/loadavg | awk '{print $1}')
+DISK_USAGE=$(df -h / | awk 'NR==2 {print $5 " of " $2}')
+MEMORY=$(free -m | awk 'NR==2 {printf "%.0f%%", $3*100/$2}')
+SWAP=$(free -m | awk 'NR==3 {printf "%.0f%%", $3*100/$2}')
+TEMP=$(sensors | grep 'Package id 0' | awk '{print $4}')
+PROCESSES=$(ps -e | wc -l)
+USERS=$(who | wc -l)
+
+# Get network interface information
+INTERFACES=$(ip -o link show | awk -F': ' '{print $2}' | grep -v "lo")
+
+# Output the information
+echo "  System information as of $(date '+%a %b %d %I:%M:%S %p %Z %Y')"
+echo "  System load:                      $LOAD"
+echo "  Usage of /:                       $DISK_USAGE"
+echo "  Memory usage:                     $MEMORY"
+echo "  Swap usage:                       $SWAP"
+echo "  Temperature:                      $TEMP"
+echo "  Processes:                        $PROCESSES"
+echo "  Users logged in:                  $USERS"
+```
+
+and make it executable with `sudo chmod +x /etc/update-motd.d/90-system-info`.  
