@@ -176,6 +176,8 @@ Now you can read off the local temperature and humidity!
 
 ## Interface with Moisture sensor
 
+The capacitive moisture sensor linked above reads off an analogue signal which cannot be read on the pi without an analogue to digital converter. I will not detail this, and instead will simply describe how this is done with the interface to the nodemcu device. 
+
 ## Networking with Mosquitto
 
 First, install the software:
