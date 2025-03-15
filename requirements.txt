@@ -3,3 +3,4 @@ matplotlib
 paho-mqtt
 adafruit-circuitpython-dht
 board
+Flask

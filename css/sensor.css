@@ -12,18 +12,50 @@
     text-align: center;
     box-shadow: 0 2px 5px rgba(65, 37, 8, 0.1);
     width: 45%;
-    max-width: 200px;
+    max-width: 300px;
+}
+
+.sensor-card h3 {
+    margin-top: 0;
+    margin-bottom: 1.2rem;
+    color: #2c3e50;
+    font-size: 1.4rem;
+}
+
+.room-readings {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.room-reading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.8rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+}
+
+.room-label {
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    flex: 1;
 }
 
 .sensor-value {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: bold;
-    margin: 0.5rem 0;
+    margin: 0 0.5rem;
+    color: #2c3e50;
 }
 
 .sensor-unit {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #666;
+    width: 25px;
+    text-align: left;
 }
 
 #last-updated {

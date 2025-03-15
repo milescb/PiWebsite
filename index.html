@@ -23,22 +23,55 @@
         </header>
         <main>
             <h2>Current Environment Readings</h2>
+            
             <div id="sensor-display">
                 <div class="sensor-card">
                     <h3>Temperature</h3>
-                    <div id="temperature-value" class="sensor-value">--</div>
-                    <div class="sensor-unit">°F</div>
+                    <div class="room-readings">
+                        <div class="room-reading">
+                            <span class="room-label">Living Room:</span>
+                            <span id="temperature-livingroom-value" class="sensor-value">--</span>
+                            <span class="sensor-unit">°F</span>
+                        </div>
+                        <div class="room-reading">
+                            <span class="room-label">Bedroom:</span>
+                            <span id="temperature-bedroom-value" class="sensor-value">--</span>
+                            <span class="sensor-unit">°F</span>
+                        </div>
+                    </div>
                 </div>
+                
                 <div class="sensor-card">
                     <h3>Humidity</h3>
-                    <div id="humidity-value" class="sensor-value">--</div>
-                    <div class="sensor-unit">%</div>
+                    <div class="room-readings">
+                        <div class="room-reading">
+                            <span class="room-label">Living Room:</span>
+                            <span id="humidity-livingroom-value" class="sensor-value">--</span>
+                            <span class="sensor-unit">%</span>
+                        </div>
+                        <div class="room-reading">
+                            <span class="room-label">Bedroom:</span>
+                            <span id="humidity-bedroom-value" class="sensor-value">--</span>
+                            <span class="sensor-unit">%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
             <div id="last-updated">Last updated: --</div>
-            <div id="history-section">
-                <h3>Temperature & Humidity History</h3>
-                <canvas id="history-chart" width="600" height="250"></canvas>
+            
+            <div class="chart-container">
+                <div class="chart-controls">
+                    <label for="time-range-selector">Time Range:</label>
+                    <select id="time-range-selector">
+                        <option value="1h">Last Hour</option>
+                        <option value="6h">Last 6 Hours</option>
+                        <option value="24h" selected>Last 24 Hours</option>
+                        <option value="7d">Last Week</option>
+                        <option value="30d">Last Month</option>
+                    </select>
+                </div>
+                <canvas id="history-chart"></canvas>
             </div>
         </main>
     </div>
