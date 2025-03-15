@@ -26,14 +26,14 @@ def init_db():
     conn.close()
 
 # MQTT Configuration
-MQTT_BROKER = "localhost"
+MQTT_BROKER = "10.0.0.32"
 MQTT_PORT = 1883
 MQTT_TOPICS = [
     ("sensor/temperature/livingroom", 1),
     ("sensor/temperature/bedroom", 1),
     ("sensor/humidity/livingroom", 1),
     ("sensor/humidity/bedroom", 1),
-    ("sensor/moisture/plant1", 1),
+    ("sensor/moisture/snake_plant", 1),
     ("sensor/moisture/plant2", 1),
     ("sensor/moisture/plant3", 1)
 ]

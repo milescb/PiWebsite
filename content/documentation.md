@@ -188,13 +188,18 @@ void setup() {
 }
 
 void loop() {
-    // Read temperature and humidity from DHT22
-    float temperature = dht.readTemperature();
-    float humidity = dht.readHumidity();
+    // obtain calibrated min and max moisture readings
+    int MinMoisture = 626;
+    int MaxMoisture = 317;
+
+    // apply these to map between 0 and 100
+    int rawMoisture = analogRead(MOISTURE_PIN);
+    float moisture = map(rawMoisture, MinMoisture, 
+                            MaxMoisture, 0, 100);
 
     // Print soil moisture value
     Serial.print("Soil Moisture: ");
-    Serial.println(moistureValue);
+    Serial.println(moisture);
 
     delay(2000);  // Wait 2 seconds before next read
 }
