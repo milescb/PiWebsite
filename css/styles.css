@@ -17,7 +17,7 @@ body {
 
 header {
     background-color: #72a178;
-    color: #d8177b;
+    color: #fda9d0;
     padding: 1rem;
     text-align: center;
 }
@@ -38,7 +38,7 @@ nav ul li {
 }
 
 nav ul li a {
-    color: #fec3fe;
+    color: #fda9d0;
     text-decoration: none;
     padding: 5px 10px;
 }
@@ -53,5 +53,5 @@ main {
 }
 
 h2 {
-    color: #d8177b;
+    color: #d56097;
 }

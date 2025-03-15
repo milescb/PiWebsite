@@ -194,6 +194,75 @@ sudo systemctl start mosquitto
 
 Finally, test that everything is running with: `systemctl status mosquitto`. 
 
+To start the MQTT server and send messages, run something like:
+
+```python
+import time
+import paho.mqtt.client as mqtt
+
+MQTT_BROKER = "localhost" 
+MQTT_PORT = 1883
+MQTT_TOPIC = "sensor/dht22"
+MQTT_CLIENT_ID = "dht22_publisher"
+
+client = mqtt.Client(client_id=MQTT_CLIENT_ID)
+
+try:
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)
+    client.loop_start()
+
+    while True:
+        message = {"timestamp": "2025-03-14 17:30:58", 
+                    "temperature": 64.8, "humidity": 73.7}
+        result = client.publish(MQTT_TOPIC, message, qos=1)
+        time.sleep(20)
+
+except KeyboardInterrupt:
+    print("Program stopped by user")
+finally:
+    client.loop_stop()
+    client.disconnect()
+```
+
+and to recieve, all that is needed is a simple script:
+
+```python
+import json
+import paho.mqtt.client as mqtt
+
+MQTT_BROKER = "localhost" 
+MQTT_PORT = 1883
+MQTT_TOPIC = "sensor/test_dht22"
+MQTT_CLIENT_ID = "test_dht22_subscriber"
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print(f"Connected to MQTT broker at {MQTT_BROKER}")
+        client.subscribe(MQTT_TOPIC, qos=1)
+        print(f"Subscribed to topic: {MQTT_TOPIC}")
+    else:
+        print(f"Failed to connect to MQTT broker with code: {rc}")
+
+def on_message(client, userdata, msg):
+    payload = msg.payload.decode("utf-8")
+    reading = json.loads(payload)
+    
+    print(f"Received: Temp={reading['temperature']}°F, \
+                Humidity={reading['humidity']}% at {reading['timestamp']}")
+
+client = mqtt.Client(client_id=MQTT_CLIENT_ID)
+client.on_connect = on_connect
+client.on_message = on_message
+
+try:
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)
+    client.loop_forever()
+    
+except KeyboardInterrupt:
+    print("Program stopped by user")
+    client.disconnect()
+```
+
 ## Database management
 
 I use `SQLite` for database management. To install, run
