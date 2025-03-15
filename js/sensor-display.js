@@ -100,6 +100,31 @@ async function fetchHistoricalSensorData(timeRange = '24h') {
     }
 }
 
+function setupTimeRangeSelector() {
+    // Find or create the time range selector element
+    const timeRangeSelector = document.getElementById('time-range-selector');
+    
+    if (!timeRangeSelector) {
+        console.error('Time range selector element not found in DOM');
+        return;
+    }
+    
+    // Add event listener to the selector
+    timeRangeSelector.addEventListener('change', async (event) => {
+        const selectedRange = event.target.value; // e.g., '24h', '7d', '30d'
+        
+        // Fetch historical data with the selected time range
+        const historicalData = await fetchHistoricalSensorData(selectedRange);
+        
+        if (historicalData) {
+            // Update the chart with the new data
+            prepareAndDrawHistoricalData(historicalData);
+        } else {
+            console.error('Failed to fetch historical data for range:', selectedRange);
+        }
+    });
+}
+
 // Function to display current data from JSON files
 function displayCurrentData(tempLivingRoom, tempBedroom, humidityLivingRoom, humidityBedroom) {
     if (tempLivingRoom && tempLivingRoom.temperature !== undefined) {
