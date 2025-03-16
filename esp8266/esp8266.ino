@@ -116,7 +116,7 @@ void loop() {
     }
 
     // wait 1 hour before reading moisture sensor
-    if (currentInterval % 12 == 0)
+    if (currentInterval % 8 == 0)
     {
         // Read moisture level (scale from 0 to 100)
         int rawMoisture = analogRead(MOISTURE_PIN);
@@ -130,5 +130,5 @@ void loop() {
     currentInterval++;
 
     // Wait before next read
-    delay(300000);  // 5 minutes
+    delay(420000);  // 5 minutes
 }

@@ -319,10 +319,6 @@ function setupCanvas() {
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
     
-    // Set the CSS dimensions
-    canvas.style.width = rect.width + 'px';
-    canvas.style.height = rect.height + 'px';
-    
     return { width: rect.width, height: rect.height, ctx };
 }
 

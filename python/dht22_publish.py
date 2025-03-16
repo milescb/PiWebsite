@@ -7,7 +7,7 @@ import board
 import paho.mqtt.client as mqtt
 
 DHT_DEVICE = adafruit_dht.DHT22(board.D4)
-LOG_INTERVAL = 300  # log every five mins
+LOG_INTERVAL = 420  # log every seven mins
 MQTT_BROKER = "10.0.0.32"
 MQTT_PORT = 1883
 MQTT_CLIENT_ID = "dht22_publisher"
