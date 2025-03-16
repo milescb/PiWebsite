@@ -253,7 +253,56 @@ function processHistoricalData(data) {
         processedData.humidityBedroom.push(entry.humidityBedroom);
     });
     
+    // Interpolate missing values to fill gaps
+    interpolateMissingValues(processedData);
+    
     return processedData;
+}
+
+// Function to interpolate missing values to prevent gaps in the chart
+function interpolateMissingValues(data) {
+    const sensorTypes = ['tempLivingRoom', 'tempBedroom', 'humidityLivingRoom', 'humidityBedroom'];
+    
+    sensorTypes.forEach(sensorType => {
+        const values = data[sensorType];
+        
+        // Find segments with null values and interpolate them
+        for (let i = 0; i < values.length; i++) {
+            if (values[i] === null) {
+                // Find the previous valid value
+                let prevIndex = i - 1;
+                while (prevIndex >= 0 && values[prevIndex] === null) {
+                    prevIndex--;
+                }
+                
+                // Find the next valid value
+                let nextIndex = i + 1;
+                while (nextIndex < values.length && values[nextIndex] === null) {
+                    nextIndex++;
+                }
+                
+                // If we have both a previous and next valid value, interpolate
+                if (prevIndex >= 0 && nextIndex < values.length) {
+                    const prevValue = values[prevIndex];
+                    const nextValue = values[nextIndex];
+                    const totalSteps = nextIndex - prevIndex;
+                    const currentStep = i - prevIndex;
+                    
+                    // Linear interpolation
+                    values[i] = prevValue + (nextValue - prevValue) * (currentStep / totalSteps);
+                }
+                // If we only have a previous value, use that
+                else if (prevIndex >= 0) {
+                    values[i] = values[prevIndex];
+                }
+                // If we only have a next value, use that
+                else if (nextIndex < values.length) {
+                    values[i] = values[nextIndex];
+                }
+                // If we have neither, leave as null (should be rare)
+            }
+        }
+    });
 }
 
 // Function to ensure the canvas is properly sized for high-DPI displays
@@ -277,7 +326,7 @@ function setupCanvas() {
     return { width: rect.width, height: rect.height, ctx };
 }
 
-// Function to draw history chart
+// Function to draw history chart with improved handling of data gaps
 function drawHistoryChart(canvas, data) {
     // Get properly sized canvas and context
     const { width, height, ctx } = setupCanvas() || {};
@@ -297,7 +346,7 @@ function drawHistoryChart(canvas, data) {
     
     if (pointCount === 0) return;
     
-    // Filter out null values
+    // Filter out null values for min/max calculation
     const allTemps = [...data.tempLivingRoom, ...data.tempBedroom].filter(v => v !== null);
     const allHumidities = [...data.humidityLivingRoom, ...data.humidityBedroom].filter(v => v !== null);
     
@@ -343,7 +392,6 @@ function drawHistoryChart(canvas, data) {
 
     // Temperature grid lines
     ctx.textAlign = 'right';
-    // ctx.fillStyle = '#FF6B6B'; // Red for temperature
     for (let i = 0; i <= 5; i++) {
         const y = height - padding.bottom - (i / 5) * chartHeight;
         const tempValue = minTemp + (i / 5) * (maxTemp - minTemp);
@@ -369,7 +417,6 @@ function drawHistoryChart(canvas, data) {
     
     // Humidity grid lines
     ctx.textAlign = 'left';
-    // ctx.fillStyle = '#4ECDC4'; // Teal for humidity
     for (let i = 0; i <= 5; i++) {
         const y = height - padding.bottom - (i / 5) * chartHeight;
         const humidityValue = minHumidity + (i / 5) * (maxHumidity - minHumidity);
@@ -385,26 +432,26 @@ function drawHistoryChart(canvas, data) {
     const timestampInterval = Math.max(1, Math.ceil(pointCount / maxLabels));
     
     ctx.save();
-    for (let i = 0; i < pointCount; i += timestampInterval) {
-        const x = padding.left + (i / (pointCount - 1 || 1)) * chartWidth;
-        
+    const numLines = 6;
+    for (let i = 0; i < numLines; i++) {
+        const index = Math.round((i / (numLines - 1)) * (pointCount - 1));
+        const x = padding.left + (index / (pointCount - 1)) * chartWidth;
+    
         // Draw vertical grid line
         ctx.beginPath();
         ctx.moveTo(x, height - padding.bottom);
         ctx.lineTo(x, padding.top);
         ctx.stroke();
-        
+    
         // Format and draw the timestamp
-        const timestamp = formatShortDateTime(new Date(data.timestamps[i]));
+        const timestamp = formatShortDateTime(new Date(data.timestamps[index]));
         ctx.translate(x, height - padding.bottom + 15);
-        // ctx.rotate(Math.PI / 4); // Angle the text to avoid overlap
         ctx.fillText(timestamp, 0, 0);
-        // ctx.rotate(-Math.PI / 4);
         ctx.translate(-x, -(height - padding.bottom + 15));
     }
     ctx.restore();
     
-    // Draw data lines with improved coordinates
+    // Draw data lines with continuous connections
     // Draw living room temperature line (darker red)
     drawLine(ctx, data.timestamps, data.tempLivingRoom, '#FF3333', width, height, padding, chartWidth, chartHeight, minTemp, maxTemp);
     
@@ -421,39 +468,34 @@ function drawHistoryChart(canvas, data) {
     drawLegend(ctx, width, height);
 }
 
-// Helper function to draw a line on the chart, handling null values
+// Helper function to draw a line on the chart, handling null values with connecting lines
 function drawLine(ctx, timestamps, values, color, width, height, padding, chartWidth, chartHeight, min, max) {
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     
     const pointCount = timestamps.length;
-    let pathStarted = false;
+    let lastValidIndex = -1;
     
     ctx.beginPath();
-    values.forEach((value, index) => {
-        if (value === null) {
-            if (pathStarted) {
-                ctx.stroke();
-                ctx.beginPath();
-                pathStarted = false;
-            }
-            return;
-        }
-        
-        const x = padding.left + (index / (pointCount - 1 || 1)) * chartWidth;
-        const y = height - padding.bottom - ((value - min) / (max - min) * chartHeight);
-        
-        if (!pathStarted) {
-            ctx.moveTo(x, y);
-            pathStarted = true;
-        } else {
-            ctx.lineTo(x, y);
-        }
-    });
     
-    if (pathStarted) {
-        ctx.stroke();
+    for (let i = 0; i < values.length; i++) {
+        if (values[i] !== null) {
+            const x = padding.left + (i / (pointCount - 1 || 1)) * chartWidth;
+            const y = height - padding.bottom - ((values[i] - min) / (max - min) * chartHeight);
+            
+            if (lastValidIndex === -1) {
+                // First valid point, start the path
+                ctx.moveTo(x, y);
+            } else {
+                // Connect to the previous valid point
+                ctx.lineTo(x, y);
+            }
+            
+            lastValidIndex = i;
+        }
     }
+    
+    ctx.stroke();
 }
 
 // Function to draw the chart legend
