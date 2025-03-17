@@ -2,12 +2,19 @@
 import os
 import json
 import sqlite3
+import threading
+import time
 import paho.mqtt.client as mqtt
 from datetime import datetime
 
 # SQLite Database Setup
 DATA_DIR = "data"
 DB_FILE = os.path.join(DATA_DIR, "sensor_data.db")
+
+# Buffer for batch writing
+data_buffer = []
+BUFFER_LOCK = threading.Lock()
+BATCH_INTERVAL = 600  # Write to SQLite every 10 minutes (600 seconds)
 
 def init_db():
     """Initialize the SQLite database."""
@@ -24,7 +31,7 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
-
+   
 # MQTT Configuration
 MQTT_BROKER = "10.0.0.32"
 MQTT_PORT = 1883
@@ -40,25 +47,46 @@ MQTT_TOPICS = [
 MQTT_CLIENT_ID = "sensor_subscriber"
 
 def save_current_readings(value, sensor_type, location, timestamp):
-    with open(os.path.join(DATA_DIR, f"{sensor_type}_{location}.json"), 'w') as file:
-        dic = {sensor_type: value, "timestamp": timestamp}
-        json.dump(dic, file)
-        
-def save_to_db(sensor_type, location, value):
-    """Save the sensor reading to the SQLite database."""
-    try:
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        conn = sqlite3.connect(DB_FILE)
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO sensor_data (sensor_type, location, timestamp, value)
-            VALUES (?, ?, ?, ?)
-        ''', (sensor_type, location, timestamp, value))
-        conn.commit()
-        conn.close()
-        print(f"Saved: {sensor_type} in {location} = {value} at {timestamp}")
-    except Exception as e:
-        print(f"Error saving to database: {e}")
+    """Save the latest reading in a JSON file (stored in RAM)."""
+    with open(f"/dev/shm/{sensor_type}_{location}.json", 'w') as file:
+        json.dump({sensor_type: value, "timestamp": timestamp}, file)
+
+def batch_write_to_db():
+    """Writes accumulated sensor data to the database in batch mode."""
+    global data_buffer
+    while True:
+        time.sleep(BATCH_INTERVAL) 
+        with BUFFER_LOCK:
+            if data_buffer: 
+                try:
+                    conn = sqlite3.connect(DB_FILE)
+                    cursor = conn.cursor()
+
+                    # Apply SQLite optimizations
+                    cursor.execute("PRAGMA journal_mode=WAL;")  
+                    cursor.execute("PRAGMA synchronous=NORMAL;")  
+                    cursor.execute("PRAGMA temp_store=MEMORY;")  
+                    cursor.execute("PRAGMA cache_size=-2048;")  
+                    cursor.execute("PRAGMA busy_timeout=3000;")  
+
+                    # Batch insert
+                    cursor.executemany('''
+                        INSERT INTO sensor_data (sensor_type, location, timestamp, value)
+                        VALUES (?, ?, ?, ?)
+                    ''', data_buffer)
+
+                    conn.commit()
+                    conn.close()
+                    print(f"Batch saved {len(data_buffer)} records to database.")
+                    data_buffer = []  # Clear buffer after writing
+                except Exception as e:
+                    print(f"Error during batch save: {e}")
+
+def save_to_buffer(sensor_type, location, value):
+    """Save the sensor reading to the buffer for batch writing."""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with BUFFER_LOCK:
+        data_buffer.append((sensor_type, location, timestamp, value))
 
 def on_connect(client, userdata, flags, rc):
     """Callback when connected to the MQTT broker."""
@@ -82,10 +110,8 @@ def on_message(client, userdata, msg):
 
         if "value" in reading:
             value = float(reading["value"])
-            save_to_db(sensor_type, location, value)
-            if "room" in location:
-                save_current_readings(value, sensor_type, location, 
-                                      datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            save_to_buffer(sensor_type, location, value)
+            save_current_readings(value, sensor_type, location, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         else:
             print(f"Invalid data format: {reading}")
 
@@ -94,8 +120,25 @@ def on_message(client, userdata, msg):
     except Exception as e:
         print(f"Error processing message: {e}")
 
+def graceful_shutdown():
+    """Write any remaining buffered data before exiting."""
+    with BUFFER_LOCK:
+        if data_buffer:
+            try:
+                conn = sqlite3.connect(DB_FILE)
+                cursor = conn.cursor()
+                cursor.executemany('''
+                    INSERT INTO sensor_data (sensor_type, location, timestamp, value)
+                    VALUES (?, ?, ?, ?)
+                ''', data_buffer)
+                conn.commit()
+                conn.close()
+                print(f"Final batch save: {len(data_buffer)} records written before shutdown.")
+            except Exception as e:
+                print(f"Error during shutdown save: {e}")
+
 def main():
-    """Main function to start the MQTT subscriber."""
+    """Main function to start the MQTT subscriber and batch writer."""
     init_db()
     print("MQTT Subscriber for Sensor Data Started")
 
@@ -103,11 +146,16 @@ def main():
     client.on_connect = on_connect
     client.on_message = on_message
 
+    # Start batch writer thread
+    batch_thread = threading.Thread(target=batch_write_to_db, daemon=True)
+    batch_thread.start()
+
     try:
         client.connect(MQTT_BROKER, MQTT_PORT, 60)
         client.loop_forever()
     except KeyboardInterrupt:
-        print("Program stopped by user")
+        print("Program stopped by user. Flushing remaining data...")
+        graceful_shutdown()
         client.disconnect()
     except Exception as e:
         print(f"Unexpected error: {e}")

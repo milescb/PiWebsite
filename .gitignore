@@ -1,4 +1,6 @@
 *.venv
 *.json
 *.db
+*.db-shm
+*.db-wal
 __pycache__

@@ -1,8 +1,8 @@
 // Configuration
-const TEMPERATURE_LIVINGROOM_URL = 'data/temperature_livingroom.json';
-const TEMPERATURE_BEDROOM_URL = 'data/temperature_bedroom.json';
-const HUMIDITY_LIVINGROOM_URL = 'data/humidity_livingroom.json';
-const HUMIDITY_BEDROOM_URL = 'data/humidity_bedroom.json';
+const TEMPERATURE_LIVINGROOM_URL = 'data/json_data/temperature_livingroom.json';
+const TEMPERATURE_BEDROOM_URL = 'data/json_data/temperature_bedroom.json';
+const HUMIDITY_LIVINGROOM_URL = 'data/json_data/humidity_livingroom.json';
+const HUMIDITY_BEDROOM_URL = 'data/json_data/humidity_bedroom.json';
 const SENSOR_HISTORY_API_URL = 'api/sensor_data/history';
 const UPDATE_INTERVAL = 60000; // Update every 60 seconds
 
