@@ -14,6 +14,8 @@ const humidityBedroomElement = document.getElementById('humidity-bedroom-value')
 const lastUpdatedElement = document.getElementById('last-updated');
 const canvas = document.getElementById('history-chart');
 
+let currentTimeRange = '24h';
+
 // Function to format date and time
 function formatDateTime(date) {
     return date.toLocaleString('en-US', {
@@ -85,7 +87,12 @@ async function fetchAllCurrentSensorData() {
 }
 
 // Function to fetch historical sensor data from SQLite database via API
-async function fetchHistoricalSensorData(timeRange = '24h') {
+async function fetchHistoricalSensorData(timeRange) {
+    // if time range provided, update time range
+    if (timeRange) {
+        currentTimeRange = timeRange;
+    }
+
     try {
         const response = await fetch(`${SENSOR_HISTORY_API_URL}?range=${timeRange}`);
         if (!response.ok) {
@@ -108,6 +115,8 @@ function setupTimeRangeSelector() {
         console.error('Time range selector element not found in DOM');
         return;
     }
+
+    timeRangeSelector.value = currentTimeRange;
     
     // Add event listener to the selector
     timeRangeSelector.addEventListener('change', async (event) => {
@@ -167,7 +176,7 @@ async function initDataRefresh() {
     await fetchAllCurrentSensorData();
     
     // Fetch historical data from SQLite database via API
-    const historicalData = await fetchHistoricalSensorData();
+    const historicalData = await fetchHistoricalSensorData(currentTimeRange);
     if (historicalData) {
         prepareAndDrawHistoricalData(historicalData);
     }
@@ -175,7 +184,7 @@ async function initDataRefresh() {
     // Set up periodic refresh
     setInterval(async () => {
         await fetchAllCurrentSensorData();
-        const historicalData = await fetchHistoricalSensorData();
+        const historicalData = await fetchHistoricalSensorData(currentTimeRange);
         if (historicalData) {
             prepareAndDrawHistoricalData(historicalData);
         }
