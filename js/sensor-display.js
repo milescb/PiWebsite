@@ -11,7 +11,8 @@ const tempLivingRoomElement = document.getElementById('temperature-livingroom-va
 const tempBedroomElement = document.getElementById('temperature-bedroom-value');
 const humidityLivingRoomElement = document.getElementById('humidity-livingroom-value');
 const humidityBedroomElement = document.getElementById('humidity-bedroom-value');
-const lastUpdatedElement = document.getElementById('last-updated');
+const lastUpdatedBedroomElement = document.getElementById('last-updated-bedroom');
+const lastUpdatedLivingRoomElement = document.getElementById('last-updated-livingroom');
 const canvas = document.getElementById('history-chart');
 
 let currentTimeRange = '24h';
@@ -19,13 +20,13 @@ let currentTimeRange = '24h';
 // Function to format date and time
 function formatDateTime(date) {
     return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
     });
 }
 
@@ -66,19 +67,9 @@ async function fetchAllCurrentSensorData() {
         ]);
         
         displayCurrentData(tempLivingRoom, tempBedroom, humidityLivingRoom, humidityBedroom);
-        
-        // Use the newest timestamp for the "last updated" display
-        const timestamps = [
-            tempLivingRoom?.timestamp, 
-            tempBedroom?.timestamp, 
-            humidityLivingRoom?.timestamp, 
-            humidityBedroom?.timestamp
-        ].filter(t => t);
-        
-        if (timestamps.length > 0) {
-            const newestTimestamp = new Date(Math.max(...timestamps.map(t => new Date(t).getTime())));
-            lastUpdatedElement.textContent = `Last updated: ${formatDateTime(newestTimestamp)}`;
-        }
+
+        lastUpdatedBedroomElement.textContent = `Last updated: ${formatDateTime(tempBedroom.timestamp)}`;
+        lastUpdatedLivingRoomElement.textContent = `Last updated: ${formatDateTime(tempLivingRoom.timestamp)}`;
         
     } catch (error) {
         console.error('Error fetching sensor data:', error);
@@ -167,7 +158,8 @@ function displayError() {
     tempBedroomElement.textContent = 'Err';
     humidityLivingRoomElement.textContent = 'Err';
     humidityBedroomElement.textContent = 'Err';
-    lastUpdatedElement.textContent = 'Unable to fetch sensor data';
+    lastUpdatedBedroomElement.textContent = 'Unable to fetch sensor data';
+    lastUpdatedLivingRoomElement.textContent = 'Unable to fetch sensor data';
 }
 
 // Initialize data refresh
@@ -432,11 +424,9 @@ function drawHistoryChart(canvas, data) {
     ctx.fillStyle = '#666';
     ctx.textAlign = 'center';
     
-    // Calculate optimal number of timestamp labels to avoid overcrowding
-    const maxLabels = Math.floor(chartWidth / 100); // Minimum 100px between labels
-    const timestampInterval = Math.max(1, Math.ceil(pointCount / maxLabels));
-    
     ctx.save();
+
+    // draw N evenly spaced lines from starting point to end
     const numLines = 6;
     for (let i = 0; i < numLines; i++) {
         const index = Math.round((i / (numLines - 1)) * (pointCount - 1));
@@ -456,25 +446,29 @@ function drawHistoryChart(canvas, data) {
     }
     ctx.restore();
     
-    // Draw data lines with continuous connections
     // Draw living room temperature line (darker red)
-    drawLine(ctx, data.timestamps, data.tempLivingRoom, '#FF3333', width, height, padding, chartWidth, chartHeight, minTemp, maxTemp);
+    drawLine(ctx, data.timestamps, data.tempLivingRoom, '#FF3333', 
+                width, height, padding, chartWidth, chartHeight, minTemp, maxTemp);
     
     // Draw bedroom temperature line (lighter red)
-    drawLine(ctx, data.timestamps, data.tempBedroom, '#FF9999', width, height, padding, chartWidth, chartHeight, minTemp, maxTemp);
+    drawLine(ctx, data.timestamps, data.tempBedroom, '#FF9999', 
+                width, height, padding, chartWidth, chartHeight, minTemp, maxTemp);
     
     // Draw living room humidity line (darker blue)
-    drawLine(ctx, data.timestamps, data.humidityLivingRoom, '#3399FF', width, height, padding, chartWidth, chartHeight, minHumidity, maxHumidity);
+    drawLine(ctx, data.timestamps, data.humidityLivingRoom, '#3399FF', 
+                width, height, padding, chartWidth, chartHeight, minHumidity, maxHumidity);
     
     // Draw bedroom humidity line (lighter blue)
-    drawLine(ctx, data.timestamps, data.humidityBedroom, '#99CCFF', width, height, padding, chartWidth, chartHeight, minHumidity, maxHumidity);
+    drawLine(ctx, data.timestamps, data.humidityBedroom, '#99CCFF', 
+                width, height, padding, chartWidth, chartHeight, minHumidity, maxHumidity);
     
     // Add legend
     drawLegend(ctx, width, height);
 }
 
 // Helper function to draw a line on the chart, handling null values with connecting lines
-function drawLine(ctx, timestamps, values, color, width, height, padding, chartWidth, chartHeight, min, max) {
+function drawLine(ctx, timestamps, values, color, 
+                    width, height, padding, chartWidth, chartHeight, min, max) {
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     
