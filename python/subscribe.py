@@ -16,7 +16,7 @@ data_buffer = []
 BUFFER_LOCK = threading.Lock()
 BATCH_INTERVAL = 600  # Write to SQLite every 10 minutes (600 seconds)
 
-def init_db():
+def init_db(use_indexes=False):
     """Initialize the SQLite database."""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
@@ -30,6 +30,18 @@ def init_db():
         )
     ''')
     conn.commit()
+    
+    if use_indexes:
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_sensor_data_timestamp'")
+        if not cursor.fetchone():
+            # Create an index on the timestamp column for faster range queries
+            cursor.execute("CREATE INDEX idx_sensor_data_timestamp ON sensor_data(timestamp)")
+            
+        # Create a compound index for queries that filter by multiple columns
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_sensor_data_compound'")
+        if not cursor.fetchone():
+            cursor.execute("CREATE INDEX idx_sensor_data_compound ON sensor_data(sensor_type, location, timestamp)")
+    
     conn.close()
    
 # MQTT Configuration
