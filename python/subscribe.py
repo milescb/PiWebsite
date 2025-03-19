@@ -30,18 +30,6 @@ def init_db(use_indexes=False):
         )
     ''')
     conn.commit()
-    
-    if use_indexes:
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_sensor_data_timestamp'")
-        if not cursor.fetchone():
-            # Create an index on the timestamp column for faster range queries
-            cursor.execute("CREATE INDEX idx_sensor_data_timestamp ON sensor_data(timestamp)")
-            
-        # Create a compound index for queries that filter by multiple columns
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_sensor_data_compound'")
-        if not cursor.fetchone():
-            cursor.execute("CREATE INDEX idx_sensor_data_compound ON sensor_data(sensor_type, location, timestamp)")
-    
     conn.close()
    
 # MQTT Configuration
@@ -78,7 +66,7 @@ def batch_write_to_db():
                     cursor.execute("PRAGMA journal_mode=WAL;")  
                     cursor.execute("PRAGMA synchronous=NORMAL;")  
                     cursor.execute("PRAGMA temp_store=MEMORY;")  
-                    cursor.execute("PRAGMA cache_size=-2048;")  
+                    cursor.execute("PRAGMA cache_size=-4096;")  
                     cursor.execute("PRAGMA busy_timeout=3000;")  
 
                     # Batch insert

@@ -48,7 +48,7 @@ sudo apt install tmux
 sudo apt install tree
 ```
 
-### Remote access with meshnet
+<!-- ### Remote access with meshnet
 
 First, install `nordvpn` and login:
 
@@ -63,7 +63,7 @@ Then, enable meshnet via
 sudo nordvpn set meshnet on
 ```
 
-Note: this takes up a considerable amount of the pi's idle compute. By default, I have this set off and can decide to set on if I need access remotely. Alternatively, you can forward the ssh port (or please choose a non-default port) but this can open your pi up to attempted hacks. 
+Note: this takes up a considerable amount of the pi's idle compute. By default, I have this set off and can decide to set on if I need access remotely. Alternatively, you can forward the ssh port (or please choose a non-default port) but this can open your pi up to attempted hacks.  -->
 
 ## Host Website
 
@@ -176,9 +176,17 @@ Now you can read off the local temperature and humidity!
 
 ## Interface with Moisture sensor
 
-The capacitive moisture sensor linked above reads off an analogue signal which cannot be read on the pi without an analogue to digital converter. I will not detail this, and instead will simply describe how this is done with the interface to the nodemcu device. 
+The capacitive moisture sensor linked above reads off an analogue signal which cannot be read on the pi without an analogue to digital converter. I will not detail this, and instead will simply describe how this is done with the interface to the nodemcu esp device. 
 
-```c
+To wire the capacitive sensor:
+
+- Connect positive lead to 3.3V pin 
+- Connect ground lead to ground pin
+- Connect signal pin to the A0 pin
+
+Then, compile the following code and upload to the board using the [Arduino IDE](https://www.arduino.cc/en/software). 
+
+```cpp
 #include <Arduino.h>
 
 #define MOISTURE_PIN A0  // Analog pin for moisture sensor
@@ -188,7 +196,9 @@ void setup() {
 }
 
 void loop() {
+
     // obtain calibrated min and max moisture readings
+    // NOTE: these need to be calculated with your particular device
     int MinMoisture = 626;
     int MaxMoisture = 317;
 
@@ -301,6 +311,39 @@ sudo apt update
 sudo apt install sqlite3
 ```
 
+We can then create the database and interface with it using `python`
+
+```python
+import sqlite3
+
+# create database
+def init_db(use_indexes=False):
+    """Initialize the SQLite database."""
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS sensor_data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sensor_type TEXT,
+            location TEXT,
+            timestamp TEXT,
+            value REAL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+# add to database
+conn = sqlite3.connect(DB_FILE)
+cursor = conn.cursor()
+cursor.executemany('''
+    INSERT INTO sensor_data (sensor_type, location, timestamp, value)
+    VALUES (?, ?, ?, ?)
+''', data_buffer)
+conn.commit()
+conn.close()
+```
+
 ## Login Display
 
 Edit `/etc/motd` and put your login message there:
@@ -320,7 +363,7 @@ Edit `/etc/motd` and put your login message there:
 
 Then, to display current readings edit the file `/etc/update-motd.d/90-system-info` with the contents:
 
-```
+```bash
 #!/bin/bash
 
 # Get system information
