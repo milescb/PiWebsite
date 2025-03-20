@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # Database configuration
-DB_FILE = 'data/sensor_data.db'
+DB_FILE = '../data/sensor_data.db'
 
 def dict_factory(cursor, row):
     """Convert database row objects to a dictionary"""
