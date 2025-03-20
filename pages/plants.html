@@ -6,6 +6,7 @@
     <title>Plants</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/plants.css">
+    <script src="../js/moisture-display.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -24,7 +25,6 @@
 
             <!-- SPOTTED BEGONIA -->
             <div class="card">
-                
                 <!-- Left Section: Image with Subtitle -->
                 <div class="section image-section">
                     <div class="image-container">
@@ -33,29 +33,24 @@
                     <div class="common-name">Spotted Begonia</div>
                     <div class="scientific-name">Begonia Maculata</div>
                 </div>
-                
                 <!-- Middle Section: Button and Text -->
                 <div class="moisture-card">
                     <div class="button-section">
-                        <button class="button">Watered!</button>
-                        <div id="last-updated-plant" class="last-updated">Last Watered: --</div>
-                      </div>
-                    
+                        <button id="water-btn-begonia" class="button">Watered!</button>
+                        <div id="last-watered-begonia" class="last-updated">Last Watered: --</div>
+                    </div>
                     <div class="range-reading">
-                      <span class="range-label">Acceptable:</span>
-                      <span class="range-value">20-40</span>
-                      <span class="sensor-unit">%</span>
+                        <span class="range-label">Acceptable:</span>
+                        <span class="range-value">20-40</span>
+                        <span class="sensor-unit">%</span>
                     </div>
-                    
                     <div class="sensor-reading">
-                      <span class="sensor-label">Moisture:</span>
-                      <span id="plant-sensor-val" class="sensor-value">--</span>
-                      <span class="sensor-unit">%</span>
+                        <span class="sensor-label">Moisture:</span>
+                        <span id="begonia" class="sensor-value">--</span>
+                        <span class="sensor-unit">%</span>
                     </div>
-                    
-                    <div class="last-updated">Last updated: --</div>
+                    <div id="last-updated-begonia" class="last-updated">Last updated: --</div>
                 </div>
-                
                 <!-- Right Section: Plot -->
                 <div class="section plot-section">
                     <div class="plot">Plot visualization here</div>
