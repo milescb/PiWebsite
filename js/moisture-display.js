@@ -1,13 +1,18 @@
 // path to files and constants
 const UPDATE_INTERVAL = 60000;
 const PLANTS = [
-  {
-    id: 'begonia',
-    name: 'Spotted Begonia',
-    dataUrl: '../data/json_data/moisture_spotted_begonia.json',
-    storageKey: 'lastWatered_begonia'
-  }
-  // Add more plants here as needed
+    {
+        id: 'begonia',
+        name: 'Spotted Begonia',
+        dataUrl: '../data/json_data/moisture_spotted_begonia.json',
+        storageKey: 'lastWatered_begonia'
+    },
+    {
+        id: 'snake_plant',
+        name: 'Snake Plant',
+        dataUrl: '../data/json_data/moisture_snake_plant.json',
+        storageKey: 'lastWatered_snake_plant'
+    }
 ];
 
 // Function to format date and time
