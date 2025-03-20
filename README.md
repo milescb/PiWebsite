@@ -13,4 +13,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Then, open a `tmux` session and run the python script. 
+Then, open a `tmux` session and run the python scripts, one in each tmux window:
+
+```
+cd python
+# subscribe to MQTT messages
+python subscribe.py
+```
+and run the API in the background
+```
+gunicorn --bind 0.0.0.0:5000 sqlite_api:app
+```
