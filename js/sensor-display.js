@@ -368,10 +368,10 @@ function drawHistoryChart(canvas, data) {
     const chartHeight = height - padding.top - padding.bottom;
     
     // Draw title
-    ctx.font = 'bold 16px Arial';
-    ctx.fillStyle = '#333';
-    ctx.textAlign = 'center';
-    ctx.fillText('Temperature and Humidity History', width / 2, 25);
+    // ctx.font = 'bold 16px Arial';
+    // ctx.fillStyle = '#333';
+    // ctx.textAlign = 'center';
+    // ctx.fillText('Temperature and Humidity History', width / 2, 25);
     
     // Draw grid lines and labels
     ctx.strokeStyle = '#DDD';
@@ -499,43 +499,72 @@ function drawLine(ctx, timestamps, values, color,
 
 // Function to draw the chart legend
 function drawLegend(ctx, width, height) {
-    const legendX = width / 2 - 170;
-    const legendY = 35;
-    const itemHeight = 20;
-    const itemWidth = 150;
+    // Set legend to always take up approximately the same proportion of screen
+    const legendWidthProportion = 0.5; // Legend width as a proportion of canvas width
+    const legendHeightProportion = 0.1; // Legend height as a proportion of canvas height
     
-    ctx.font = '12px Arial';
+    // Calculate dimensions based on proportions
+    const legendWidth = width * legendWidthProportion;
+    const legendHeight = height * legendHeightProportion;
+    
+    // Position legend centered at the top of the chart
+    const legendX = (width - legendWidth) / 2;
+    const legendY = height * 0.15; // Position at 5% from the top
+    
+    // Calculate row height for two rows of legend items
+    const itemHeight = legendHeight / 2;
+    
+    // Calculate column width for two columns
+    const itemWidth = legendWidth / 2;
+    
+    // Calculate font size proportional to legend height
+    const fontSize = legendHeight * 0.25;
+    ctx.font = `${fontSize}px Arial`;
     ctx.textAlign = 'left';
     
-    // Background for legend
+    // Background for legend with proportional dimensions
     ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.fillRect(legendX - 10, legendY - 5, 360, itemHeight * 2 + 10);
+    ctx.fillRect(legendX, legendY, legendWidth, legendHeight);
     ctx.strokeStyle = '#DDD';
-    ctx.strokeRect(legendX - 10, legendY - 5, 360, itemHeight * 2 + 10);
+    ctx.strokeRect(legendX, legendY, legendWidth, legendHeight);
     
-    // Living Room Temp
+    // Calculate marker size proportional to item height
+    const markerSize = itemHeight * 0.6;
+    const markerPadding = legendWidth * 0.02; // 2% of legend width
+    
+    // Padding for text
+    const textPadding = markerSize + markerPadding * 2;
+    
+    // Row 1, Column 1: Living Room Temp
     ctx.fillStyle = '#FF3333';
-    ctx.fillRect(legendX, legendY, 15, 15);
+    ctx.fillRect(legendX + markerPadding, legendY + (itemHeight - markerSize) / 2, markerSize, markerSize);
     ctx.fillStyle = '#333';
-    ctx.fillText('Living Room Temp', legendX + 20, legendY + 12);
+    ctx.fillText('Living Room Temp', legendX + textPadding, legendY + itemHeight / 2 + fontSize / 3);
     
-    // Bedroom Temp
+    // Row 2, Column 1: Bedroom Temp
     ctx.fillStyle = '#FF9999';
-    ctx.fillRect(legendX, legendY + itemHeight, 15, 15);
+    ctx.fillRect(legendX + markerPadding, legendY + itemHeight + (itemHeight - markerSize) / 2, markerSize, markerSize);
     ctx.fillStyle = '#333';
-    ctx.fillText('Bedroom Temp', legendX + 20, legendY + itemHeight + 12);
+    ctx.fillText('Bedroom Temp', legendX + textPadding, legendY + itemHeight * 1.5 + fontSize / 3);
     
-    // Living Room Humidity
+    // Row 1, Column 2: Living Room Humidity
     ctx.fillStyle = '#3399FF';
-    ctx.fillRect(legendX + itemWidth, legendY, 15, 15);
+    ctx.fillRect(legendX + itemWidth + markerPadding, legendY + (itemHeight - markerSize) / 2, markerSize, markerSize);
     ctx.fillStyle = '#333';
-    ctx.fillText('Living Room Humidity', legendX + itemWidth + 20, legendY + 12);
     
-    // Bedroom Humidity
+    // Adjust text length based on available space
+    const availableWidth = itemWidth - textPadding - markerPadding;
+    const humidityLabel = (availableWidth < fontSize * 12) ? 'LR Humidity' : 'Living Room Humidity';
+    ctx.fillText(humidityLabel, legendX + itemWidth + textPadding, legendY + itemHeight / 2 + fontSize / 3);
+    
+    // Row 2, Column 2: Bedroom Humidity
     ctx.fillStyle = '#99CCFF';
-    ctx.fillRect(legendX + itemWidth, legendY + itemHeight, 15, 15);
+    ctx.fillRect(legendX + itemWidth + markerPadding, legendY + itemHeight + (itemHeight - markerSize) / 2, markerSize, markerSize);
     ctx.fillStyle = '#333';
-    ctx.fillText('Bedroom Humidity', legendX + itemWidth + 20, legendY + itemHeight + 12);
+    
+    // Adjust text length based on available space
+    const bedroomHumLabel = (availableWidth < fontSize * 12) ? 'BR Humidity' : 'Bedroom Humidity';
+    ctx.fillText(bedroomHumLabel, legendX + itemWidth + textPadding, legendY + itemHeight * 1.5 + fontSize / 3);
 }
 
 // Start the application when DOM is fully loaded
