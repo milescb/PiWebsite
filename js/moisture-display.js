@@ -223,7 +223,14 @@ function drawMoistureChart(container, data, plantName) {
             hoverformat: '%b %d, %Y %H:%M'
         },
         yaxis: {
-            title: 'Moisture (%)',
+            title: {
+                text: 'Moisture (%)',
+                font: {
+                    size: 14,
+                    color: '#444'
+                },
+                standoff: 15 // Adds spacing between axis and title
+            },
             range: [minMoisture, maxMoisture]
         },
         margin: {
@@ -279,7 +286,7 @@ function drawMoistureChart(container, data, plantName) {
     // Define configuration with responsive behavior
     const config = {
         responsive: true,
-        displayModeBar: false // Hide the modebar for cleaner look
+        // displayModeBar: true // Hide the modebar for cleaner look
     };
     
     // Create the plot

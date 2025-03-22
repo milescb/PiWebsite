@@ -181,7 +181,7 @@
 }
   
 div.plot {
-    overflow: hidden;
+    overflow: visible;
 }
 
 @media screen and (max-width: 600px) {
@@ -206,8 +206,20 @@ div.plot {
         max-height: 200px;
     }
     
+    .plot-section {
+        min-height: 250px;
+        position: relative;
+        display: block;
+    }
+      
     .plot {
-        min-height: 120px;
+        position: relative; 
+        height: 250px;
+        width: 100%;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
     }
     
     .container {
