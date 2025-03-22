@@ -292,19 +292,21 @@ function interpolateMissingValues(data) {
     });
 }
 
-// Function to create Plotly chart
 function createPlotlyChart(data) {
     if (!plotlyChartDiv) {
         console.error('History chart element not found in DOM');
         return;
     }
-    
+
     // Check if we have data
     if (data.timestamps.length === 0) {
         console.error('No data points to plot');
         return;
     }
-    
+
+    // Check if we're on mobile
+    const isMobile = window.innerWidth < 768;
+
     // Create traces for temperature data
     const tempLivingRoomTrace = {
         x: data.timestamps,
@@ -317,7 +319,7 @@ function createPlotlyChart(data) {
         },
         yaxis: 'y'
     };
-    
+
     const tempBedroomTrace = {
         x: data.timestamps,
         y: data.tempBedroom,
@@ -329,7 +331,7 @@ function createPlotlyChart(data) {
         },
         yaxis: 'y'
     };
-    
+
     // Create traces for humidity data
     const humidityLivingRoomTrace = {
         x: data.timestamps,
@@ -342,7 +344,7 @@ function createPlotlyChart(data) {
         },
         yaxis: 'y2'
     };
-    
+
     const humidityBedroomTrace = {
         x: data.timestamps,
         y: data.humidityBedroom,
@@ -358,12 +360,10 @@ function createPlotlyChart(data) {
     // Calculate min/max for temperature and humidity
     const validTemps = [...data.tempLivingRoom, ...data.tempBedroom].filter(v => v !== null && v !== undefined);
     const validHumidities = [...data.humidityLivingRoom, ...data.humidityBedroom].filter(v => v !== null && v !== undefined);
-    
     if (validTemps.length === 0 || validHumidities.length === 0) {
         console.error('Not enough valid data points to plot');
         return;
     }
-    
     const minTemp = Math.max(0, Math.min(...validTemps) - 2);
     const maxTemp = Math.max(...validTemps) + 2;
     const minHumidity = Math.max(0, Math.min(...validHumidities) - 5);
@@ -371,14 +371,14 @@ function createPlotlyChart(data) {
     
     // Create layout with dual y-axes
     const layout = {
-        title: 'Temperature and Humidity History',
         xaxis: {
             title: 'Time',
             showgrid: true,
-            gridcolor: '#DDD'
+            gridcolor: '#DDD',
+            tickformat: isMobile ? '%H:%M' : ''
         },
         yaxis: {
-            title: 'Temperature (°F)',
+            title: isMobile ? 'Temp (°F)' : 'Temperature (°F)',
             showgrid: true,
             gridcolor: '#DDD',
             side: 'left',
@@ -392,25 +392,32 @@ function createPlotlyChart(data) {
             range: [minHumidity, maxHumidity]
         },
         legend: {
-            orientation: 'h',
-            y: 1.12,
+            // Move legend below chart on mobile
+            orientation: isMobile ? 'h' : 'h',
+            y: isMobile ? -0.2 : 1.12,
             x: 0.5,
-            xanchor: 'center'
+            xanchor: 'center',
+            itemsizing: 'constant',
+            itemwidth: isMobile ? 1 : 20,
+            symbolsize: isMobile ? 1 : 2,
+            font: { size: isMobile ? 10 : 12 },
         },
         margin: {
-            l: 60,
-            r: 60,
-            t: 80,
-            b: 60
+            l: isMobile ? 40 : 60,
+            r: isMobile ? 40 : 60,
+            t: isMobile ? 50 : 80,
+            b: isMobile ? 80 : 60,
+            pad: 4
         },
         showlegend: true,
-        hovermode: 'closest'
+        hovermode: 'closest',
+        height: isMobile ? 300 : 400
     };
     
     // Create responsive config
     const config = {
         responsive: true,
-        displayModeBar: true,
+        displayModeBar: !isMobile, // Hide mode bar on mobile to save space
         displaylogo: false,
         modeBarButtonsToRemove: ['lasso2d', 'select2d'],
         toImageButtonOptions: {
@@ -422,13 +429,30 @@ function createPlotlyChart(data) {
         }
     };
     
+    // Update trace names for mobile
+    if (isMobile) {
+        tempLivingRoomTrace.name = 'LR Temp';
+        tempBedroomTrace.name = 'BR Temp';
+        humidityLivingRoomTrace.name = 'LR Humid';
+        humidityBedroomTrace.name = 'BR Humid';
+    }
+    
     // Plot data
     Plotly.newPlot(
-        plotlyChartDiv, 
-        [tempLivingRoomTrace, tempBedroomTrace, humidityLivingRoomTrace, humidityBedroomTrace], 
+        plotlyChartDiv,
+        [tempLivingRoomTrace, tempBedroomTrace, humidityLivingRoomTrace, humidityBedroomTrace],
         layout,
         config
     );
+    
+    // Add a window resize handler to update the chart
+    window.addEventListener('resize', function() {
+        const newIsMobile = window.innerWidth < 768;
+        // Only redraw if mobile state changed
+        if (newIsMobile !== isMobile) {
+            createPlotlyChart(data);
+        }
+    });
 }
 
 // Start the application when DOM is fully loaded
