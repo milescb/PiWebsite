@@ -17,9 +17,12 @@ def dict_factory(cursor, row):
 
 @app.route('/sensor_data/history', methods=['GET'])
 def get_historical_sensor_data():
-    """Get historical sensor data for a specified time range"""
+    """Get historical sensor data for a specified time range with filtering options"""
     try:
+        # Get all query parameters
         time_range = request.args.get('range', '24h')
+        sensor_type = request.args.get('sensor_type', 'default')
+        location = request.args.get('location', None)
         
         # Calculate time cutoff based on range parameter
         now = datetime.datetime.now()
@@ -46,29 +49,45 @@ def get_historical_sensor_data():
         conn.row_factory = dict_factory
         cursor = conn.cursor()
         
+        # Build the query with parameters
+        query_params = [cutoff_timestamp]
+        filter_clause = "WHERE timestamp >= ?"
+        
+        # Add sensor type filtering
+        if sensor_type == 'moisture':
+            filter_clause += " AND sensor_type = 'moisture'"
+            # If location is specified, add location filter for moisture sensors
+            if location:
+                filter_clause += " AND location = ?"
+                query_params.append(location)
+        elif sensor_type != 'all':
+            # Default behavior: return only temperature and humidity
+            filter_clause += " AND sensor_type IN ('temperature', 'humidity')"
+        
         # downsample the data to avoid overwhelming the chart
         if time_range in ['7d', '30d']:
             # For longer periods, group by hour
-            cursor.execute('''
+            query = f'''
                 SELECT
                     sensor_type,
                     location,
                     strftime('%Y-%m-%d %H:%M:%S', timestamp) as timestamp,
                     AVG(value) as value
                 FROM sensor_data
-                WHERE timestamp >= ?
+                {filter_clause}
                 GROUP BY sensor_type, location, strftime('%Y-%m-%d %H', timestamp)
                 ORDER BY timestamp
-            ''', (cutoff_timestamp,))
+            '''
         else:
             # For shorter periods, get all data points
-            cursor.execute('''
+            query = f'''
                 SELECT sensor_type, location, timestamp, value
                 FROM sensor_data
-                WHERE timestamp >= ?
+                {filter_clause}
                 ORDER BY timestamp
-            ''', (cutoff_timestamp,))
+            '''
             
+        cursor.execute(query, query_params)
         data = cursor.fetchall()
         conn.close()
         

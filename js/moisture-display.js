@@ -1,9 +1,9 @@
 // path to files and constants
-const SENSOR_HISTORY_API_URL = 'api/sensor_data/history';
+const SENSOR_HISTORY_API_URL = '../api/sensor_data/history';
 const UPDATE_INTERVAL = 60000;
 const PLANTS = [
     {
-        id: 'begonia',
+        id: 'spotted_begonia',
         name: 'Spotted Begonia',
         dataUrl: '../data/json_data/moisture_spotted_begonia.json',
         storageKey: 'lastWatered_begonia'
@@ -115,19 +115,51 @@ function displayLastWatered(plant) {
     }
 }
 
-// Function to fetch historical moisture data from API
+// Fix the fetchMoistureHistory function
 async function fetchMoistureHistory(plantId) {
     try {
         // Always request 7-day data
-        const response = await fetch(`${SENSOR_HISTORY_API_URL}?sensor=${plantId}&type=moisture&range=7d`);
+        const response = await fetch(`${SENSOR_HISTORY_API_URL}?sensor_type=moisture&location=${plantId}&range=7d`);
         if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.status}`);
         }
-        return await response.json();
+        const data = await response.json();
+        return processHistoricalData(data);
     } catch (error) {
         console.error(`Error fetching historical data for ${plantId}:`, error);
         return null;
     }
+}
+
+// Fix the processHistoricalData function
+function processHistoricalData(data) {
+    const dataByTimestamp = new Map();
+
+    data.forEach(record => {
+        const timestamp = record.timestamp;
+        if (!dataByTimestamp.has(timestamp)) {
+            dataByTimestamp.set(timestamp, {
+                moisturePlant: null
+            });
+        }
+
+        const entry = dataByTimestamp.get(timestamp);
+        entry.moisturePlant = record.value;
+    });
+
+    const sortedTimestamps = Array.from(dataByTimestamp.keys()).sort();
+
+    const processedData = {
+        timestamps: sortedTimestamps,
+        moisture: [] // Changed to 'moisture' to match usage in drawMoistureChart
+    };
+
+    sortedTimestamps.forEach(timestamp => {
+        const entry = dataByTimestamp.get(timestamp);
+        processedData.moisture.push(entry.moisturePlant);
+    });
+
+    return processedData;
 }
 
 // Function to ensure the canvas is properly sized for high-DPI displays
@@ -147,7 +179,7 @@ function setupCanvas(canvas) {
     return { width: rect.width, height: rect.height, ctx };
 }
 
-// Function to draw moisture chart
+// Fix the drawMoistureChart function to handle data correctly
 function drawMoistureChart(canvas, data, plantName) {
     // Get properly sized canvas and context
     const { width, height, ctx } = setupCanvas(canvas) || {};
@@ -156,7 +188,7 @@ function drawMoistureChart(canvas, data, plantName) {
     // Padding for chart
     const padding = {
         left: 50,
-        right: 20,
+        right: 25,
         top: 30,
         bottom: 40
     };
@@ -174,7 +206,7 @@ function drawMoistureChart(canvas, data, plantName) {
     
     // Process data for chart
     const timestamps = data.timestamps.map(ts => new Date(ts));
-    const moisture = data.moisture;
+    const moisture = data.moisture; // This now correctly matches the property name set in processHistoricalData
     
     // Find min and max values for scaling
     const validMoisture = moisture.filter(v => v !== null);
@@ -197,12 +229,6 @@ function drawMoistureChart(canvas, data, plantName) {
     // Calculate chart area
     const chartWidth = width - padding.left - padding.right;
     const chartHeight = height - padding.top - padding.bottom;
-    
-    // Draw title
-    ctx.font = 'bold 14px Arial';
-    ctx.fillStyle = '#333';
-    ctx.textAlign = 'center';
-    ctx.fillText(`${plantName} Moisture History (7 Days)`, width / 2, 15);
     
     // Draw grid lines and labels
     ctx.strokeStyle = '#DDD';
@@ -238,7 +264,7 @@ function drawMoistureChart(canvas, data, plantName) {
     ctx.textAlign = 'center';
     
     // Draw time labels (5 evenly spaced)
-    const numLabels = 5;
+    const numLabels = 3;
     for (let i = 0; i < numLabels; i++) {
         const index = Math.floor(i * (timestamps.length - 1) / (numLabels - 1));
         if (index < 0 || index >= timestamps.length) continue;
@@ -248,8 +274,7 @@ function drawMoistureChart(canvas, data, plantName) {
         
         ctx.save();
         ctx.translate(x, height - padding.bottom + 15);
-        ctx.rotate(Math.PI / 4);
-        ctx.fillText(formatShortDateTime(date), 0, 0);
+        ctx.fillText(formatShortDateTime(date), -7, 0);
         ctx.restore();
         
         // X-axis tick
