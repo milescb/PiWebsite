@@ -378,14 +378,20 @@ function createPlotlyChart(data) {
             tickformat: isMobile ? '%H:%M' : ''
         },
         yaxis: {
-            title: isMobile ? 'Temp (°F)' : 'Temperature (°F)',
+            title: {
+                text: isMobile ? 'Temp (°F)' : 'Temperature (°F)',
+                standoff: 10  // Add standoff to prevent text from getting cut off
+            },
             showgrid: true,
             gridcolor: '#DDD',
             side: 'left',
             range: [minTemp, maxTemp]
         },
         yaxis2: {
-            title: 'Humidity (%)',
+            title: {
+                text: 'Humidity (%)',
+                standoff: 10  // Add standoff to prevent text from getting cut off
+            },
             showgrid: false,
             side: 'right',
             overlaying: 'y',
