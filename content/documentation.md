@@ -8,6 +8,7 @@ Hardware
 - Temperature and Humidity Sensor: [DHT22](https://www.amazon.com/dp/B0CN5PN225?ref=ppx_yo2ov_dt_b_fed_asin_title)
 - Microcontroller: [NodeMCU ESP8266](https://store-usa.arduino.cc/products/nodemcu-esp8266?srsltid=AfmBOoqXQniBXi6xgaQYNjxUDYrIKuJDMJ8GJLIlXFsOszKOACP5djWs)
 - Capacitive moisture sensor: [v1.2](https://www.amazon.com/Stemedu-Capacitive-Corrosion-Resistant-Electronic/dp/B0BTHL6M19)
+- Analog multiplexer chip: [CD4051BE](https://www.ti.com/product/CD4051B)
 
 Software
 
@@ -212,6 +213,45 @@ void loop() {
     Serial.println(moisture);
 
     delay(2000);  // Wait 2 seconds before next read
+}
+```
+
+### Multiple Moisture Sensors
+
+Uhoh, the esp chip only has one analog pin... how can I get multiple moisture sensors connected to one device?! 
+
+To solve this problem, I use a [CD4051BE](https://www.ti.com/product/CD4051B) chip. To wire and get this working with the Arduino IDE, I found [this example](https://github.com/witnessmenow/ESP8266-4051-Multiplexer-Example/blob/master/Esp8266_4051_Multiplexer.ino) very helpful. My implementation uses the wiring documented in the example and these functions to read the moisture:
+
+```cpp
+void changeMux(int c, int b, int a) 
+{
+    digitalWrite(MUX_A, a);
+    digitalWrite(MUX_B, b);
+    digitalWrite(MUX_C, c);
+}
+
+
+float readMoisture(int muxChannel, float rawMin, float rawMax)
+{
+    // Set the MUX to the desired channel
+    switch(muxChannel) {
+        case 0: changeMux(LOW, LOW, LOW); break;  // Channel 0: 000
+        case 1: changeMux(LOW, LOW, HIGH); break; // Channel 1: 001
+        case 2: changeMux(LOW, HIGH, LOW); break; // Channel 2: 010
+        case 3: changeMux(LOW, HIGH, HIGH); break; // Channel 3: 011
+        case 4: changeMux(HIGH, LOW, LOW); break; // Channel 4: 100
+        case 5: changeMux(HIGH, LOW, HIGH); break; // Channel 5: 101
+        case 6: changeMux(HIGH, HIGH, LOW); break; // Channel 6: 110
+        case 7: changeMux(HIGH, HIGH, HIGH); break; // Channel 7: 111
+        default: changeMux(LOW, LOW, LOW); break;  // Default
+    }
+    delay(10); // time to settle
+
+    // read and convert 
+    int rawValue = analogRead(ANALOG_INPUT);
+    float moisturePercent = map(rawValue, rawMin, rawMax, 0, 100);
+
+    return moisturePercent;
 }
 ```
 
