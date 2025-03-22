@@ -13,7 +13,7 @@ const humidityLivingRoomElement = document.getElementById('humidity-livingroom-v
 const humidityBedroomElement = document.getElementById('humidity-bedroom-value');
 const lastUpdatedBedroomElement = document.getElementById('last-updated-bedroom');
 const lastUpdatedLivingRoomElement = document.getElementById('last-updated-livingroom');
-const canvas = document.getElementById('history-chart');
+const plotlyChartDiv = document.getElementById('history-chart'); // Changed from canvas to div for Plotly
 
 let currentTimeRange = '24h';
 
@@ -68,8 +68,8 @@ async function fetchAllCurrentSensorData() {
         
         displayCurrentData(tempLivingRoom, tempBedroom, humidityLivingRoom, humidityBedroom);
 
-        lastUpdatedBedroomElement.textContent = `Last updated: ${formatDateTime(tempBedroom.timestamp)}`;
-        lastUpdatedLivingRoomElement.textContent = `Last updated: ${formatDateTime(tempLivingRoom.timestamp)}`;
+        lastUpdatedBedroomElement.textContent = `Last updated: ${formatDateTime(new Date(tempBedroom.timestamp))}`;
+        lastUpdatedLivingRoomElement.textContent = `Last updated: ${formatDateTime(new Date(tempLivingRoom.timestamp))}`;
         
     } catch (error) {
         console.error('Error fetching sensor data:', error);
@@ -118,7 +118,8 @@ function setupTimeRangeSelector() {
         
         if (historicalData) {
             // Update the chart with the new data
-            prepareAndDrawHistoricalData(historicalData);
+            const processedData = processHistoricalData(historicalData);
+            createPlotlyChart(processedData);
         } else {
             console.error('Failed to fetch historical data for range:', selectedRange);
         }
@@ -170,7 +171,8 @@ async function initDataRefresh() {
     // Fetch historical data from SQLite database via API
     const historicalData = await fetchHistoricalSensorData(currentTimeRange);
     if (historicalData) {
-        prepareAndDrawHistoricalData(historicalData);
+        const processedData = processHistoricalData(historicalData);
+        createPlotlyChart(processedData);
     }
     
     // Set up periodic refresh
@@ -178,26 +180,10 @@ async function initDataRefresh() {
         await fetchAllCurrentSensorData();
         const historicalData = await fetchHistoricalSensorData(currentTimeRange);
         if (historicalData) {
-            prepareAndDrawHistoricalData(historicalData);
+            const processedData = processHistoricalData(historicalData);
+            createPlotlyChart(processedData);
         }
     }, UPDATE_INTERVAL);
-}
-
-// Function to prepare and draw historical data
-function prepareAndDrawHistoricalData(historicalData) {
-    if (!canvas) {
-        console.error('History chart element not found in DOM');
-        return;
-    }
-    
-    // Reset canvas
-    setupCanvas();
-    
-    // Process the historical data
-    const processedData = processHistoricalData(historicalData);
-    
-    // Draw the chart using the historical data
-    drawHistoryChart(canvas, processedData);
 }
 
 // Function to process historical data from SQLite for the chart
@@ -239,7 +225,7 @@ function processHistoricalData(data) {
     const sortedTimestamps = Array.from(dataByTimestamp.keys()).sort();
     
     const processedData = {
-        timestamps: sortedTimestamps,
+        timestamps: sortedTimestamps.map(ts => new Date(ts)),
         tempLivingRoom: [],
         tempBedroom: [],
         humidityLivingRoom: [],
@@ -306,265 +292,143 @@ function interpolateMissingValues(data) {
     });
 }
 
-// Function to ensure the canvas is properly sized for high-DPI displays
-function setupCanvas() {
-    if (!canvas) return;
+// Function to create Plotly chart
+function createPlotlyChart(data) {
+    if (!plotlyChartDiv) {
+        console.error('History chart element not found in DOM');
+        return;
+    }
     
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
+    // Check if we have data
+    if (data.timestamps.length === 0) {
+        console.error('No data points to plot');
+        return;
+    }
     
-    // Set the canvas dimensions to match its CSS size multiplied by device pixel ratio
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
-    
-    return { width: rect.width, height: rect.height, ctx };
-}
-
-// Function to draw history chart with improved handling of data gaps
-function drawHistoryChart(canvas, data) {
-    // Get properly sized canvas and context
-    const { width, height, ctx } = setupCanvas() || {};
-    if (!ctx) return;
-    
-    // Increase padding for better label positioning
-    const padding = {
-        left: 70,    // More space for temperature labels
-        right: 70,   // More space for humidity labels
-        top: 70,     // Space for title and legend
-        bottom: 60   // Space for x-axis labels
+    // Create traces for temperature data
+    const tempLivingRoomTrace = {
+        x: data.timestamps,
+        y: data.tempLivingRoom,
+        name: 'Living Room Temp',
+        type: 'scatter',
+        line: {
+            color: '#FF3333',
+            width: 2
+        },
+        yaxis: 'y'
     };
     
-    ctx.clearRect(0, 0, width, height);
+    const tempBedroomTrace = {
+        x: data.timestamps,
+        y: data.tempBedroom,
+        name: 'Bedroom Temp',
+        type: 'scatter',
+        line: {
+            color: '#FF9999',
+            width: 2
+        },
+        yaxis: 'y'
+    };
     
-    const pointCount = data.timestamps.length;
+    // Create traces for humidity data
+    const humidityLivingRoomTrace = {
+        x: data.timestamps,
+        y: data.humidityLivingRoom,
+        name: 'Living Room Humidity',
+        type: 'scatter',
+        line: {
+            color: '#3399FF',
+            width: 2
+        },
+        yaxis: 'y2'
+    };
     
-    if (pointCount === 0) return;
+    const humidityBedroomTrace = {
+        x: data.timestamps,
+        y: data.humidityBedroom,
+        name: 'Bedroom Humidity',
+        type: 'scatter',
+        line: {
+            color: '#99CCFF',
+            width: 2
+        },
+        yaxis: 'y2'
+    };
     
-    // Filter out null values for min/max calculation
-    const allTemps = [...data.tempLivingRoom, ...data.tempBedroom].filter(v => v !== null);
-    const allHumidities = [...data.humidityLivingRoom, ...data.humidityBedroom].filter(v => v !== null);
+    // Calculate min/max for temperature and humidity
+    const validTemps = [...data.tempLivingRoom, ...data.tempBedroom].filter(v => v !== null && v !== undefined);
+    const validHumidities = [...data.humidityLivingRoom, ...data.humidityBedroom].filter(v => v !== null && v !== undefined);
     
-    if (allTemps.length === 0 || allHumidities.length === 0) return;
-    
-    let minTemp = Math.min(...allTemps);
-    let maxTemp = Math.max(...allTemps);
-    let minHumidity = Math.min(...allHumidities);
-    let maxHumidity = Math.max(...allHumidities);
-    
-    // Add padding to min/max
-    const tempPadding = Math.max(2, (maxTemp - minTemp) * 0.1);
-    const humidityPadding = Math.max(5, (maxHumidity - minHumidity) * 0.1);
-    
-    minTemp = Math.max(0, minTemp - tempPadding);
-    maxTemp += tempPadding;
-    minHumidity = Math.max(0, minHumidity - humidityPadding);
-    maxHumidity = Math.min(100, maxHumidity + humidityPadding);
-    
-    // Calculate chart area
-    const chartWidth = width - padding.left - padding.right;
-    const chartHeight = height - padding.top - padding.bottom;
-    
-    // Draw title
-    // ctx.font = 'bold 16px Arial';
-    // ctx.fillStyle = '#333';
-    // ctx.textAlign = 'center';
-    // ctx.fillText('Temperature and Humidity History', width / 2, 25);
-    
-    // Draw grid lines and labels
-    ctx.strokeStyle = '#DDD';
-    ctx.lineWidth = 1;
-    ctx.font = '12px Arial';
-    
-    // Y-axis temperature (left)
-    ctx.save();
-    ctx.translate(20, height / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillStyle = '#666';
-    ctx.textAlign = 'center';
-    ctx.fillText('Temperature (°F)', 0, 0);
-    ctx.restore();
-
-    // Temperature grid lines
-    ctx.textAlign = 'right';
-    for (let i = 0; i <= 5; i++) {
-        const y = height - padding.bottom - (i / 5) * chartHeight;
-        const tempValue = minTemp + (i / 5) * (maxTemp - minTemp);
-        
-        // Draw temperature label
-        ctx.fillText(`${tempValue.toFixed(0)}`, padding.left - 10, y + 4);
-        
-        // Draw horizontal grid line
-        ctx.beginPath();
-        ctx.moveTo(padding.left, y);
-        ctx.lineTo(width - padding.right, y);
-        ctx.stroke();
+    if (validTemps.length === 0 || validHumidities.length === 0) {
+        console.error('Not enough valid data points to plot');
+        return;
     }
     
-    // Y-axis humidity (right)
-    ctx.save();
-    ctx.translate(width - 20, height / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillStyle = '#666';
-    ctx.textAlign = 'center';
-    ctx.fillText('Humidity (%)', 0, 0);
-    ctx.restore();
+    const minTemp = Math.max(0, Math.min(...validTemps) - 2);
+    const maxTemp = Math.max(...validTemps) + 2;
+    const minHumidity = Math.max(0, Math.min(...validHumidities) - 5);
+    const maxHumidity = Math.min(100, Math.max(...validHumidities) + 5);
     
-    // Humidity grid lines
-    ctx.textAlign = 'left';
-    for (let i = 0; i <= 5; i++) {
-        const y = height - padding.bottom - (i / 5) * chartHeight;
-        const humidityValue = minHumidity + (i / 5) * (maxHumidity - minHumidity);
-        ctx.fillText(`${humidityValue.toFixed(0)}`, width - padding.right + 10, y + 4);
-    }
+    // Create layout with dual y-axes
+    const layout = {
+        title: 'Temperature and Humidity History',
+        xaxis: {
+            title: 'Time',
+            showgrid: true,
+            gridcolor: '#DDD'
+        },
+        yaxis: {
+            title: 'Temperature (°F)',
+            showgrid: true,
+            gridcolor: '#DDD',
+            side: 'left',
+            range: [minTemp, maxTemp]
+        },
+        yaxis2: {
+            title: 'Humidity (%)',
+            showgrid: false,
+            side: 'right',
+            overlaying: 'y',
+            range: [minHumidity, maxHumidity]
+        },
+        legend: {
+            orientation: 'h',
+            y: 1.12,
+            x: 0.5,
+            xanchor: 'center'
+        },
+        margin: {
+            l: 60,
+            r: 60,
+            t: 80,
+            b: 60
+        },
+        showlegend: true,
+        hovermode: 'closest'
+    };
     
-    // X-axis time labels
-    ctx.fillStyle = '#666';
-    ctx.textAlign = 'center';
-    
-    ctx.save();
-
-    // draw N evenly spaced lines from starting point to end
-    const numLines = 6;
-    for (let i = 0; i < numLines; i++) {
-        const index = Math.round((i / (numLines - 1)) * (pointCount - 1));
-        const x = padding.left + (index / (pointCount - 1)) * chartWidth;
-    
-        // Draw vertical grid line
-        ctx.beginPath();
-        ctx.moveTo(x, height - padding.bottom);
-        ctx.lineTo(x, padding.top);
-        ctx.stroke();
-    
-        // Format and draw the timestamp
-        const timestamp = formatShortDateTime(new Date(data.timestamps[index]));
-        ctx.translate(x, height - padding.bottom + 15);
-        ctx.fillText(timestamp, 0, 0);
-        ctx.translate(-x, -(height - padding.bottom + 15));
-    }
-    ctx.restore();
-    
-    // Draw living room temperature line (darker red)
-    drawLine(ctx, data.timestamps, data.tempLivingRoom, '#FF3333', 
-                width, height, padding, chartWidth, chartHeight, minTemp, maxTemp);
-    
-    // Draw bedroom temperature line (lighter red)
-    drawLine(ctx, data.timestamps, data.tempBedroom, '#FF9999', 
-                width, height, padding, chartWidth, chartHeight, minTemp, maxTemp);
-    
-    // Draw living room humidity line (darker blue)
-    drawLine(ctx, data.timestamps, data.humidityLivingRoom, '#3399FF', 
-                width, height, padding, chartWidth, chartHeight, minHumidity, maxHumidity);
-    
-    // Draw bedroom humidity line (lighter blue)
-    drawLine(ctx, data.timestamps, data.humidityBedroom, '#99CCFF', 
-                width, height, padding, chartWidth, chartHeight, minHumidity, maxHumidity);
-    
-    // Add legend
-    drawLegend(ctx, width, height);
-}
-
-// Helper function to draw a line on the chart, handling null values with connecting lines
-function drawLine(ctx, timestamps, values, color, 
-                    width, height, padding, chartWidth, chartHeight, min, max) {
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    
-    const pointCount = timestamps.length;
-    let lastValidIndex = -1;
-    
-    ctx.beginPath();
-    
-    for (let i = 0; i < values.length; i++) {
-        if (values[i] !== null) {
-            const x = padding.left + (i / (pointCount - 1 || 1)) * chartWidth;
-            const y = height - padding.bottom - ((values[i] - min) / (max - min) * chartHeight);
-            
-            if (lastValidIndex === -1) {
-                // First valid point, start the path
-                ctx.moveTo(x, y);
-            } else {
-                // Connect to the previous valid point
-                ctx.lineTo(x, y);
-            }
-            
-            lastValidIndex = i;
+    // Create responsive config
+    const config = {
+        responsive: true,
+        displayModeBar: true,
+        displaylogo: false,
+        modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+        toImageButtonOptions: {
+            format: 'png',
+            filename: 'sensor_history',
+            height: 500,
+            width: 700,
+            scale: 2
         }
-    }
+    };
     
-    ctx.stroke();
-}
-
-// Function to draw the chart legend
-function drawLegend(ctx, width, height) {
-    // Set legend to always take up approximately the same proportion of screen
-    const legendWidthProportion = 0.5; // Legend width as a proportion of canvas width
-    const legendHeightProportion = 0.1; // Legend height as a proportion of canvas height
-    
-    // Calculate dimensions based on proportions
-    const legendWidth = width * legendWidthProportion;
-    const legendHeight = height * legendHeightProportion;
-    
-    // Position legend centered at the top of the chart
-    const legendX = (width - legendWidth) / 2;
-    const legendY = height * 0.15; // Position at 5% from the top
-    
-    // Calculate row height for two rows of legend items
-    const itemHeight = legendHeight / 2;
-    
-    // Calculate column width for two columns
-    const itemWidth = legendWidth / 2;
-    
-    // Calculate font size proportional to legend height
-    const fontSize = legendHeight * 0.25;
-    ctx.font = `${fontSize}px Arial`;
-    ctx.textAlign = 'left';
-    
-    // Background for legend with proportional dimensions
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.fillRect(legendX, legendY, legendWidth, legendHeight);
-    ctx.strokeStyle = '#DDD';
-    ctx.strokeRect(legendX, legendY, legendWidth, legendHeight);
-    
-    // Calculate marker size proportional to item height
-    const markerSize = itemHeight * 0.6;
-    const markerPadding = legendWidth * 0.02; // 2% of legend width
-    
-    // Padding for text
-    const textPadding = markerSize + markerPadding * 2;
-    
-    // Row 1, Column 1: Living Room Temp
-    ctx.fillStyle = '#FF3333';
-    ctx.fillRect(legendX + markerPadding, legendY + (itemHeight - markerSize) / 2, markerSize, markerSize);
-    ctx.fillStyle = '#333';
-    ctx.fillText('Living Room Temp', legendX + textPadding, legendY + itemHeight / 2 + fontSize / 3);
-    
-    // Row 2, Column 1: Bedroom Temp
-    ctx.fillStyle = '#FF9999';
-    ctx.fillRect(legendX + markerPadding, legendY + itemHeight + (itemHeight - markerSize) / 2, markerSize, markerSize);
-    ctx.fillStyle = '#333';
-    ctx.fillText('Bedroom Temp', legendX + textPadding, legendY + itemHeight * 1.5 + fontSize / 3);
-    
-    // Row 1, Column 2: Living Room Humidity
-    ctx.fillStyle = '#3399FF';
-    ctx.fillRect(legendX + itemWidth + markerPadding, legendY + (itemHeight - markerSize) / 2, markerSize, markerSize);
-    ctx.fillStyle = '#333';
-    
-    // Adjust text length based on available space
-    const availableWidth = itemWidth - textPadding - markerPadding;
-    const humidityLabel = (availableWidth < fontSize * 12) ? 'LR Humidity' : 'Living Room Humidity';
-    ctx.fillText(humidityLabel, legendX + itemWidth + textPadding, legendY + itemHeight / 2 + fontSize / 3);
-    
-    // Row 2, Column 2: Bedroom Humidity
-    ctx.fillStyle = '#99CCFF';
-    ctx.fillRect(legendX + itemWidth + markerPadding, legendY + itemHeight + (itemHeight - markerSize) / 2, markerSize, markerSize);
-    ctx.fillStyle = '#333';
-    
-    // Adjust text length based on available space
-    const bedroomHumLabel = (availableWidth < fontSize * 12) ? 'BR Humidity' : 'Bedroom Humidity';
-    ctx.fillText(bedroomHumLabel, legendX + itemWidth + textPadding, legendY + itemHeight * 1.5 + fontSize / 3);
+    // Plot data
+    Plotly.newPlot(
+        plotlyChartDiv, 
+        [tempLivingRoomTrace, tempBedroomTrace, humidityLivingRoomTrace, humidityBedroomTrace], 
+        layout,
+        config
+    );
 }
 
 // Start the application when DOM is fully loaded

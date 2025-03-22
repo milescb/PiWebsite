@@ -65,7 +65,7 @@ def get_historical_sensor_data():
             filter_clause += " AND sensor_type IN ('temperature', 'humidity')"
         
         # downsample the data to avoid overwhelming the chart
-        if time_range in ['7d', '30d']:
+        if time_range in ['7d', '30d'] and sensor_type != 'moisture':
             # For longer periods, group by hour
             query = f'''
                 SELECT
