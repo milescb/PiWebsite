@@ -1,4 +1,4 @@
-// path to files and constants
+
 const SENSOR_HISTORY_API_URL = '../api/sensor_data/history';
 const UPDATE_INTERVAL = 60000;
 const PLANTS = [
@@ -16,7 +16,7 @@ const PLANTS = [
     }
 ];
 
-// Function to format date and time
+// formate date as YYYY-MM-DD HH:MM:SS
 function formatDateTime(date) {
   return date.toLocaleString('en-US', {
     year: 'numeric',
@@ -29,7 +29,7 @@ function formatDateTime(date) {
   });
 }
 
-// Function for shorter date/time format
+// format date as MM/DD, HH:MM
 function formatShortDateTime(date) {
     return date.toLocaleString(undefined, {
         month: 'numeric',
@@ -53,7 +53,6 @@ async function fetchSensorData(url) {
     }
 }
 
-// Fetch data for a specific plant
 async function fetchPlantData(plant) {
     try {
         const data = await fetchSensorData(plant.dataUrl);
@@ -70,52 +69,37 @@ async function fetchPlantData(plant) {
     }
 }
 
-// Function to handle watering button click for a specific plant
 function handleWatering(plant) {
     const now = new Date();
-    // Store in localStorage
     localStorage.setItem(plant.storageKey, now.toISOString());
-    // Update the display
     displayLastWatered(plant);
 }
 
-// Function to display the last watered time for a specific plant
 function displayLastWatered(plant) {
     const lastWateredElement = document.getElementById(`last-watered-${plant.id}`);
     const lastWateredTime = localStorage.getItem(plant.storageKey);
+
+    const date = new Date(lastWateredTime);
+    // Create a wrapper div to hold the two lines
+    lastWateredElement.innerHTML = '';
+    
+    // Create label line
+    const labelElement = document.createElement('div');
+    labelElement.textContent = 'Last Watered:';
+    
+    // Create date line
+    const dateElement = document.createElement('div');
     
     if (lastWateredTime) {
-        const date = new Date(lastWateredTime);
-        // Create a wrapper div to hold the two lines
-        lastWateredElement.innerHTML = '';
-        
-        // Create label line
-        const labelElement = document.createElement('div');
-        labelElement.textContent = 'Last Watered:';
-        
-        // Create date line
-        const dateElement = document.createElement('div');
         dateElement.textContent = formatShortDateTime(date);
-        
-        // Append both to the container
-        lastWateredElement.appendChild(labelElement);
-        lastWateredElement.appendChild(dateElement);
     } else {
-        // Same approach for "Never" case
-        lastWateredElement.innerHTML = '';
-        
-        const labelElement = document.createElement('div');
-        labelElement.textContent = 'Last Watered:';
-        
-        const dateElement = document.createElement('div');
         dateElement.textContent = 'Never';
-        
-        lastWateredElement.appendChild(labelElement);
-        lastWateredElement.appendChild(dateElement);
     }
+    // Append both to the container
+    lastWateredElement.appendChild(labelElement);
+    lastWateredElement.appendChild(dateElement);
 }
 
-// Fix the fetchMoistureHistory function
 async function fetchMoistureHistory(plantId) {
     try {
         // Always request 7-day data
@@ -131,7 +115,6 @@ async function fetchMoistureHistory(plantId) {
     }
 }
 
-// Fix the processHistoricalData function
 function processHistoricalData(data) {
     const dataByTimestamp = new Map();
 
@@ -151,7 +134,7 @@ function processHistoricalData(data) {
 
     const processedData = {
         timestamps: sortedTimestamps,
-        moisture: [] // Changed to 'moisture' to match usage in drawMoistureChart
+        moisture: []
     };
 
     sortedTimestamps.forEach(timestamp => {
@@ -179,7 +162,6 @@ function setupCanvas(canvas) {
     return { width: rect.width, height: rect.height, ctx };
 }
 
-// Fix the drawMoistureChart function to handle data correctly
 function drawMoistureChart(canvas, data, plantName) {
     // Get properly sized canvas and context
     const { width, height, ctx } = setupCanvas(canvas) || {};
@@ -206,7 +188,7 @@ function drawMoistureChart(canvas, data, plantName) {
     
     // Process data for chart
     const timestamps = data.timestamps.map(ts => new Date(ts));
-    const moisture = data.moisture; // This now correctly matches the property name set in processHistoricalData
+    const moisture = data.moisture;
     
     // Find min and max values for scaling
     const validMoisture = moisture.filter(v => v !== null);
@@ -263,7 +245,7 @@ function drawMoistureChart(canvas, data, plantName) {
     ctx.fillStyle = '#666';
     ctx.textAlign = 'center';
     
-    // Draw time labels (5 evenly spaced)
+    // Draw time labels (3 evenly spaced)
     const numLabels = 3;
     for (let i = 0; i < numLabels; i++) {
         const index = Math.floor(i * (timestamps.length - 1) / (numLabels - 1));
