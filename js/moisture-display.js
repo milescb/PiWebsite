@@ -1,4 +1,5 @@
 // path to files and constants
+const SENSOR_HISTORY_API_URL = 'api/sensor_data/history';
 const UPDATE_INTERVAL = 60000;
 const PLANTS = [
     {
@@ -112,12 +113,212 @@ function displayLastWatered(plant) {
         lastWateredElement.appendChild(labelElement);
         lastWateredElement.appendChild(dateElement);
     }
-  }
+}
+
+// Function to fetch historical moisture data from API
+async function fetchMoistureHistory(plantId) {
+    try {
+        // Always request 7-day data
+        const response = await fetch(`${SENSOR_HISTORY_API_URL}?sensor=${plantId}&type=moisture&range=7d`);
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(`Error fetching historical data for ${plantId}:`, error);
+        return null;
+    }
+}
+
+// Function to ensure the canvas is properly sized for high-DPI displays
+function setupCanvas(canvas) {
+    if (!canvas) return null;
+    
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    
+    // Set the canvas dimensions to match its CSS size multiplied by device pixel ratio
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    
+    return { width: rect.width, height: rect.height, ctx };
+}
+
+// Function to draw moisture chart
+function drawMoistureChart(canvas, data, plantName) {
+    // Get properly sized canvas and context
+    const { width, height, ctx } = setupCanvas(canvas) || {};
+    if (!ctx) return;
+    
+    // Padding for chart
+    const padding = {
+        left: 50,
+        right: 20,
+        top: 30,
+        bottom: 40
+    };
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    if (!data || !data.timestamps || data.timestamps.length === 0) {
+        // Draw "No data available" message
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#666';
+        ctx.textAlign = 'center';
+        ctx.fillText('No moisture data available', width/2, height/2);
+        return;
+    }
+    
+    // Process data for chart
+    const timestamps = data.timestamps.map(ts => new Date(ts));
+    const moisture = data.moisture;
+    
+    // Find min and max values for scaling
+    const validMoisture = moisture.filter(v => v !== null);
+    if (validMoisture.length === 0) {
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#666';
+        ctx.textAlign = 'center';
+        ctx.fillText('No valid moisture data', width/2, height/2);
+        return;
+    }
+    
+    let minMoisture = Math.min(...validMoisture);
+    let maxMoisture = Math.max(...validMoisture);
+    
+    // Add padding to values
+    const moisturePadding = Math.max(5, (maxMoisture - minMoisture) * 0.1);
+    minMoisture = Math.max(0, minMoisture - moisturePadding);
+    maxMoisture = Math.min(100, maxMoisture + moisturePadding);
+    
+    // Calculate chart area
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+    
+    // Draw title
+    ctx.font = 'bold 14px Arial';
+    ctx.fillStyle = '#333';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${plantName} Moisture History (7 Days)`, width / 2, 15);
+    
+    // Draw grid lines and labels
+    ctx.strokeStyle = '#DDD';
+    ctx.lineWidth = 1;
+    ctx.font = '12px Arial';
+    
+    // Y-axis moisture
+    ctx.save();
+    ctx.translate(15, height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#666';
+    ctx.textAlign = 'center';
+    ctx.fillText('Moisture (%)', 0, 0);
+    ctx.restore();
+    
+    // Y-axis grid lines
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 5; i++) {
+        const y = padding.top + chartHeight - (i / 5) * chartHeight;
+        const value = minMoisture + (i / 5) * (maxMoisture - minMoisture);
+        
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(padding.left + chartWidth, y);
+        ctx.stroke();
+        
+        ctx.fillStyle = '#666';
+        ctx.fillText(value.toFixed(0), padding.left - 5, y + 4);
+    }
+    
+    // X-axis time labels
+    ctx.fillStyle = '#666';
+    ctx.textAlign = 'center';
+    
+    // Draw time labels (5 evenly spaced)
+    const numLabels = 5;
+    for (let i = 0; i < numLabels; i++) {
+        const index = Math.floor(i * (timestamps.length - 1) / (numLabels - 1));
+        if (index < 0 || index >= timestamps.length) continue;
+        
+        const x = padding.left + (i / (numLabels - 1)) * chartWidth;
+        const date = timestamps[index];
+        
+        ctx.save();
+        ctx.translate(x, height - padding.bottom + 15);
+        ctx.rotate(Math.PI / 4);
+        ctx.fillText(formatShortDateTime(date), 0, 0);
+        ctx.restore();
+        
+        // X-axis tick
+        ctx.beginPath();
+        ctx.moveTo(x, height - padding.bottom);
+        ctx.lineTo(x, height - padding.bottom + 5);
+        ctx.stroke();
+    }
+    
+    // Draw moisture line
+    ctx.strokeStyle = '#72a178';  // Green color
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    
+    let firstPointDrawn = false;
+    
+    for (let i = 0; i < timestamps.length; i++) {
+        if (moisture[i] === null) continue;
+        
+        const x = padding.left + (i / (timestamps.length - 1)) * chartWidth;
+        const y = padding.top + chartHeight - ((moisture[i] - minMoisture) / (maxMoisture - minMoisture)) * chartHeight;
+        
+        if (!firstPointDrawn) {
+            ctx.moveTo(x, y);
+            firstPointDrawn = true;
+        } else {
+            ctx.lineTo(x, y);
+        }
+    }
+    
+    ctx.stroke();
+    
+    // Draw watering markers
+    const lastWateredTime = localStorage.getItem(`lastWatered_${data.plantId}`);
+    if (lastWateredTime) {
+        const waterDate = new Date(lastWateredTime);
+        const startDate = timestamps[0];
+        const endDate = timestamps[timestamps.length - 1];
+        
+        // Check if water date is within the chart time range
+        if (waterDate >= startDate && waterDate <= endDate) {
+            // Calculate x position for watering marker
+            const timeRange = endDate - startDate;
+            const timeSinceStart = waterDate - startDate;
+            const xPos = padding.left + (timeSinceStart / timeRange) * chartWidth;
+            
+            // Draw watering marker
+            ctx.beginPath();
+            ctx.strokeStyle = '#d56097';  // Pink color
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 3]);
+            ctx.moveTo(xPos, padding.top);
+            ctx.lineTo(xPos, height - padding.bottom);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Add "Watered" label
+            ctx.fillStyle = '#d56097';
+            ctx.textAlign = 'center';
+            ctx.font = '12px Arial';
+            ctx.fillText('Watered', xPos, padding.top - 5);
+        }
+    }
+}
 
 // Initialize the UI for all plants
 function initializePlants() {
     PLANTS.forEach(plant => {
-        // Fetch initial data
+        // Fetch initial current data
         fetchPlantData(plant);
         
         // Display last watered time from localStorage
@@ -128,11 +329,36 @@ function initializePlants() {
         if (waterButton) {
             waterButton.addEventListener('click', () => handleWatering(plant));
         }
+        
+        // Fetch and draw historical data
+        const plotCanvas = document.getElementById(`plot-${plant.id}`);
+        if (plotCanvas) {
+            fetchMoistureHistory(plant.id).then(data => {
+                if (data) {
+                    data.plantId = plant.id;
+                    drawMoistureChart(plotCanvas, data, plant.name);
+                }
+            });
+        }
     });
     
     // Set up periodic refresh for all plants
     setInterval(() => {
-        PLANTS.forEach(plant => fetchPlantData(plant));
+        PLANTS.forEach(plant => {
+            // Update current data
+            fetchPlantData(plant);
+            
+            // Update historical chart
+            const plotCanvas = document.getElementById(`plot-${plant.id}`);
+            if (plotCanvas) {
+                fetchMoistureHistory(plant.id).then(data => {
+                    if (data) {
+                        data.plantId = plant.id;
+                        drawMoistureChart(plotCanvas, data, plant.name);
+                    }
+                });
+            }
+        });
     }, UPDATE_INTERVAL);
 }
 
