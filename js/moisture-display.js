@@ -12,6 +12,24 @@ const PLANTS = [
         name: 'Snake Plant',
         dataUrl: '../data/json_data/moisture_snake_plant.json',
         storageKey: 'lastWatered_snake_plant'
+    },
+    {
+        id: 'asparagus_fern',
+        name: 'Asparagus Fern',
+        dataUrl: '../data/json_data/moisture_asparagus_fern.json',
+        storageKey: 'lastWatered_fern'
+    },
+    {
+        id: 'jade_plant',
+        name: 'Jade Plant',
+        dataUrl: '../data/json_data/moisture_jade_plant.json',
+        storageKey: 'lastWatered_jade'
+    },
+    {
+        id: 'rubber_plant',
+        name: 'Rubber Plant',
+        dataUrl: '../data/json_data/moisture_rubber_plant.json',
+        storageKey: 'lastWatered_rubber'
     }
 ];
 
@@ -286,7 +304,7 @@ function drawMoistureChart(container, data, plantName) {
     // Define configuration with responsive behavior
     const config = {
         responsive: true,
-        // displayModeBar: true // Hide the modebar for cleaner look
+        displayModeBar: false // Hide the modebar for cleaner look
     };
     
     // Create the plot
