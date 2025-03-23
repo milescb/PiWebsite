@@ -22,5 +22,5 @@ python subscribe.py
 ```
 and run the API in the background
 ```
-gunicorn --bind 0.0.0.0:5000 --worker-class gevent sqlite_api:app
+gunicorn --bind 0.0.0.0:5000 --worker-class gevent --max-requests 1000 --timeout 30 sqlite_api:app
 ```
