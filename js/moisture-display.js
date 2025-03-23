@@ -89,7 +89,7 @@ async function fetchPlantData(plant) {
 function handleWatering(plant) {
     const now = new Date();
     localStorage.setItem(plant.storageKey, now.toISOString());
-    displayLastWatered(plant);
+    // displayLastWatered(plant);
     
     // Refresh the chart to show the new watering marker
     const plotContainer = document.getElementById(`plot-${plant.id}`);
@@ -261,45 +261,45 @@ function drawMoistureChart(container, data, plantName) {
         annotations: []
     };
     
-    // Add watering marker if available
-    const lastWateredTime = localStorage.getItem(`lastWatered_${data.plantId}`);
-    if (lastWateredTime) {
-        const waterDate = new Date(lastWateredTime);
-        const startDate = timestamps[0];
-        const endDate = timestamps[timestamps.length - 1];
+    // // Add watering marker if available
+    // const lastWateredTime = localStorage.getItem(`lastWatered_${data.plantId}`);
+    // if (lastWateredTime) {
+    //     const waterDate = new Date(lastWateredTime);
+    //     const startDate = timestamps[0];
+    //     const endDate = timestamps[timestamps.length - 1];
         
-        // Check if water date is within the chart time range
-        if (waterDate >= startDate && waterDate <= endDate) {
-            // Add vertical line for watering
-            layout.shapes.push({
-                type: 'line',
-                x0: waterDate,
-                y0: 0,
-                x1: waterDate,
-                y1: 1,
-                yref: 'paper',
-                line: {
-                    color: '#d56097',
-                    width: 2,
-                    dash: 'dash'
-                }
-            });
+    //     // Check if water date is within the chart time range
+    //     if (waterDate >= startDate && waterDate <= endDate) {
+    //         // Add vertical line for watering
+    //         layout.shapes.push({
+    //             type: 'line',
+    //             x0: waterDate,
+    //             y0: 0,
+    //             x1: waterDate,
+    //             y1: 1,
+    //             yref: 'paper',
+    //             line: {
+    //                 color: '#d56097',
+    //                 width: 2,
+    //                 dash: 'dash'
+    //             }
+    //         });
             
-            // Add watering annotation
-            layout.annotations.push({
-                x: waterDate,
-                y: 1,
-                yref: 'paper',
-                text: 'Watered',
-                showarrow: false,
-                font: {
-                    color: '#d56097',
-                    size: 12
-                },
-                yshift: 15
-            });
-        }
-    }
+    //         // Add watering annotation
+    //         layout.annotations.push({
+    //             x: waterDate,
+    //             y: 1,
+    //             yref: 'paper',
+    //             text: 'Watered',
+    //             showarrow: false,
+    //             font: {
+    //                 color: '#d56097',
+    //                 size: 12
+    //             },
+    //             yshift: 15
+    //         });
+    //     }
+    // }
     
     // Define configuration with responsive behavior
     const config = {
@@ -316,8 +316,8 @@ function initializePlantsData() {
         // Fetch initial current data
         fetchPlantData(plant);
         
-        // Display last watered time from localStorage
-        displayLastWatered(plant);
+        // // Display last watered time from localStorage
+        // displayLastWatered(plant);
         
         // Add event listener for the Watered! button
         const waterButton = document.querySelector(`#water-btn-${plant.id}`);
