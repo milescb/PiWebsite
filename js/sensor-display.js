@@ -375,7 +375,7 @@ function createPlotlyChart(data) {
             title: 'Time',
             showgrid: true,
             gridcolor: '#DDD',
-            tickformat: isMobile ? '%H:%M' : ''
+            tickformat: '%H:%M'
         },
         yaxis: {
             title: {

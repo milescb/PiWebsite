@@ -30,6 +30,24 @@ const PLANTS = [
         name: 'Rubber Plant',
         dataUrl: '../data/json_data/moisture_rubber_plant.json',
         storageKey: 'lastWatered_rubber'
+    },
+    {
+        id: 'prayer_plant',
+        name: 'Prayer Plant',
+        dataUrl: '../data/json_data/moisture_prayer_plant.json',
+        storageKey: 'lastWatered_prayer',
+    },
+    {
+        id: 'norfolk_pine',
+        name: 'Norfolk Pine',
+        dataUrl: '../data/json_data/moisture_norfolk_pine.json',
+        storageKey: 'lastWatered_pine'
+    },
+    {
+        id: 'arrowhead_plant',
+        name: 'Pink Syngonium',
+        dataUrl: '../data/json_data/moisture_arrowhead_plant.json',
+        storageKey: 'lastWatered_arrow'
     }
 ];
 
