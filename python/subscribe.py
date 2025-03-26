@@ -48,6 +48,7 @@ MQTT_TOPICS = [
     ("sensor/moisture/prayer_plant", 1),
     ("sensor/moisture/norfolk_pine", 1),
     ("sensor/moisture/arrowhead_plant", 1),
+    ("sensor/moisture/nanouk", 1),
 ]
 MQTT_CLIENT_ID = "sensor_subscriber"
 

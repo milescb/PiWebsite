@@ -48,6 +48,12 @@ const PLANTS = [
         name: 'Pink Syngonium',
         dataUrl: '../data/json_data/moisture_arrowhead_plant.json',
         storageKey: 'lastWatered_arrow'
+    },
+    {
+        id: 'nanouk',
+        name: 'Fantasy Venice',
+        dataUrl: '../data/json_data/moisture_nanouk.json',
+        storageKey: 'lastWatered_nanouk'
     }
 ];
 
