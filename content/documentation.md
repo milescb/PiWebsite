@@ -386,26 +386,46 @@ conn.close()
 
 ## Website monitoring
 
-I use `goaccess` to monitor website pings. Install, and then run with:
+I use [`goaccess`](https://goaccess.io) to monitor website pings. Install (or build from source). Then, I run a cron job in the background over this script:
 
-```
-goaccess /var/log/nginx/access.log -o <path_to_cite>/report.html \
-    --log-format=COMBINED --real-time-html
+```bash
+#!/bin/bash
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+# Decompress rotated logs temporarily
+gunzip -c /var/log/nginx/access.log.*.gz > /tmp/all_access_logs.log
+
+# Combine all logs (current, rotated, and decompressed)
+cat /var/log/nginx/access.log /var/log/nginx/access.log.1 \
+    /tmp/all_access_logs.log > /tmp/combined_access.log
+
+# Run GoAccess on the combined log
+/usr/local/bin/goaccess /tmp/combined_access.log \
+    -o /home/milescb/PiWebsite/report.html --log-format=COMBINED
+
+# Clean up temp file
+rm /tmp/all_access_logs.log /tmp/combined_access.log
 ```
 
 We should secure this page. To do this, create a username and password with:
 
-```
+```bash
 sudo apt-get install apache2-utils
 sudo htpasswd -c /etc/nginx/.htpasswd username
 ```
 then update your configuration file at `/etc/nginx/sites-available/default` with
 
-```
+```bash
 location /report.html {
     auth_basic "Restricted Access";
     auth_basic_user_file /etc/nginx/.htpasswd;
 }
+```
+
+Then, restart `nginx`
+
+```
+sudo systemctl restart nginx
 ```
 
 ## Login Display
