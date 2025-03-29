@@ -3,4 +3,5 @@
 *.db
 *.db-shm
 *.db-wal
+report.html
 __pycache__
