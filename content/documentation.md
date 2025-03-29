@@ -389,7 +389,8 @@ conn.close()
 I use `goaccess` to monitor website pings. Install, and then run with:
 
 ```
-goaccess /var/log/nginx/access.log -o <path_to_cite>/report.html --log-format=COMBINED --real-time-html
+goaccess /var/log/nginx/access.log -o <path_to_cite>/report.html \
+    --log-format=COMBINED --real-time-html
 ```
 
 We should secure this page. To do this, create a username and password with:
