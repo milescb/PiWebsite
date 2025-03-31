@@ -3,8 +3,8 @@
     position: absolute;
     top: 5px;
     right: 5px;
-    background-color: #007bff;
-    color: white;
+    background-color: var(--copy-button-bg);;
+    color: var(--header-text);
     border: none;
     padding: 5px 10px;
     font-size: 0.8em;
@@ -13,7 +13,7 @@
 }
 
 .copy-button:hover {
-    background-color: #0056b3;
+    background-color: var(--copy-button-hover);
 }
 
 /* Markdown content */
@@ -36,18 +36,18 @@
 
 #markdown-content h1 {
     font-size: 2em;
-    border-bottom: 1px solid #eaecef;
+    border-bottom: 1px solid var(--markdown-border);;
     padding-bottom: 0.3em;
 }
 
 #markdown-content h2 {
     font-size: 1.5em;
-    border-bottom: 1px solid #eaecef;
+    border-bottom: 1px solid var(--markdown-border);;
     padding-bottom: 0.3em;
 }
 
 #markdown-content a {
-    color: #0366d6;
+    color: var(--link-color);
     text-decoration: none;
 }
 
@@ -67,15 +67,15 @@
 #markdown-content table th,
 #markdown-content table td {
     padding: 6px 13px;
-    border: 1px solid #dfe2e5;
+    border: 1px solid var(--border-color);
 }
 
 #markdown-content table tr {
-    background-color: #fff;
+    background-color: var(--table-stripe);
 }
 
 #markdown-content table tr:nth-child(2n) {
-    background-color: #f6f8fa;
+    background-color: var(--table-stripe);
 }
 
 #markdown-content table th {
@@ -85,7 +85,7 @@
 
 /* GitHub-like code block styling */
 pre {
-    background-color: #f6f8fa;
+    background-color: var(--code-bg);
     border-radius: 6px;
     padding: 16px;
     overflow: auto;
@@ -97,7 +97,7 @@ code {
     font-size: 85%;
     padding: 0.2em 0.4em;
     margin: 0;
-    background-color: rgba(175, 184, 193, 0.2);
+    background-color: var(--code-bg);
     border-radius: 3px;
 }
 
@@ -116,9 +116,9 @@ pre {
 
 /* Style for ToC */
 #table-of-contents {
-    background: #f8f9fa;
+    background: var(--code-bg);
     padding: 20px;
-    border-left: 4px solid #a2abb5;
+    border-left: 4px solid var(--accent-color);
     border-bottom: none;
 }
 
@@ -135,7 +135,7 @@ pre {
 #table-of-contents a {
     display: block;
     text-decoration: none;
-    color: #5b626a;
+    color: var(--text-color);
     font-weight: bold;
     font-size: 18px; 
     line-height: 0.3; 
