@@ -21,6 +21,13 @@
     --moisture-border: #d56097;
     --moisture-reading-bg: #fce5f0;
     --plant-sensor-bg: #9fb89f;
+    --plot-bg: #ffffff;
+    --plot-text: #000000;
+    --plot-grid: #dddddd;
+    --plot-temp-1: #FF3333;
+    --plot-temp-2: #FF9999;
+    --plot-humid-1: #3399FF;
+    --plot-humid-2: #99CCFF;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,5 +54,12 @@
         --moisture-border: #72a178;
         --moisture-reading-bg: #3d4d40;
         --plant-sensor-bg: #4a5d4a;
+        --plot-bg: #2d2d2d;
+        --plot-text: #e0e0e0;
+        --plot-grid: #404040;
+        --plot-temp-1: #FF4444;
+        --plot-temp-2: #FFB3B3;
+        --plot-humid-1: #4DB8FF;
+        --plot-humid-2: #B3E0FF;
     }
 }

@@ -307,14 +307,13 @@ function createPlotlyChart(data) {
     // Check if we're on mobile
     const isMobile = window.innerWidth < 768;
 
-    // Create traces for temperature data
     const tempLivingRoomTrace = {
         x: data.timestamps,
         y: data.tempLivingRoom,
         name: 'Living Room Temp',
         type: 'scatter',
         line: {
-            color: '#FF3333',
+            color: getComputedStyle(document.documentElement).getPropertyValue('--plot-temp-1').trim(),
             width: 2
         },
         yaxis: 'y'
@@ -326,20 +325,19 @@ function createPlotlyChart(data) {
         name: 'Bedroom Temp',
         type: 'scatter',
         line: {
-            color: '#FF9999',
+            color: getComputedStyle(document.documentElement).getPropertyValue('--plot-temp-2').trim(),
             width: 2
         },
         yaxis: 'y'
     };
 
-    // Create traces for humidity data
     const humidityLivingRoomTrace = {
         x: data.timestamps,
         y: data.humidityLivingRoom,
         name: 'Living Room Humidity',
         type: 'scatter',
         line: {
-            color: '#3399FF',
+            color: getComputedStyle(document.documentElement).getPropertyValue('--plot-humid-1').trim(),
             width: 2
         },
         yaxis: 'y2'
@@ -351,7 +349,7 @@ function createPlotlyChart(data) {
         name: 'Bedroom Humidity',
         type: 'scatter',
         line: {
-            color: '#99CCFF',
+            color: getComputedStyle(document.documentElement).getPropertyValue('--plot-humid-2').trim(),
             width: 2
         },
         yaxis: 'y2'
@@ -371,28 +369,39 @@ function createPlotlyChart(data) {
     
     // Create layout with dual y-axes
     const layout = {
+        paper_bgcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-bg').trim(),
+        plot_bgcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-bg').trim(),
+        font: {
+            color: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim()
+        },
         xaxis: {
             title: 'Time',
             showgrid: true,
-            gridcolor: '#DDD',
+            gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-grid').trim(),
+            tickcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim(),
+            linecolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim(),
             tickformat: '%H:%M'
         },
         yaxis: {
             title: {
                 text: isMobile ? 'Temp (°F)' : 'Temperature (°F)',
-                standoff: 10  // Add standoff to prevent text from getting cut off
+                standoff: 10
             },
             showgrid: true,
-            gridcolor: '#DDD',
+            gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-grid').trim(),
+            tickcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim(),
+            linecolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim(),
             side: 'left',
             range: [minTemp, maxTemp]
         },
         yaxis2: {
             title: {
                 text: 'Humidity (%)',
-                standoff: 10  // Add standoff to prevent text from getting cut off
+                standoff: 10
             },
             showgrid: false,
+            tickcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim(),
+            linecolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim(),
             side: 'right',
             overlaying: 'y',
             range: [minHumidity, maxHumidity]
@@ -406,7 +415,11 @@ function createPlotlyChart(data) {
             itemsizing: 'constant',
             itemwidth: isMobile ? 1 : 20,
             symbolsize: isMobile ? 1 : 2,
-            font: { size: isMobile ? 10 : 12 },
+            bgcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-bg').trim(),
+            font: { 
+                size: isMobile ? 10 : 12,
+                color: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim()
+            }
         },
         margin: {
             l: isMobile ? 40 : 60,
@@ -450,6 +463,15 @@ function createPlotlyChart(data) {
         layout,
         config
     );
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        // Redraw the chart with current data to update colors
+        const historicalData = await fetchHistoricalSensorData(currentTimeRange);
+        if (historicalData) {
+            const processedData = processHistoricalData(historicalData);
+            createPlotlyChart(processedData);
+        }
+    });
     
     // Add a window resize handler to update the chart
     window.addEventListener('resize', function() {
