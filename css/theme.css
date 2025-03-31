@@ -2,7 +2,7 @@
     /* Light theme (default) */
     --bg-color: rgb(7, 74, 35);
     --container-bg: #ffffff;
-    --text-color: #000000;
+    --text-color: #515151;
     --header-bg: #72a178;
     --header-text: #ffd1e7;
     --accent-color: #d56097;
@@ -24,10 +24,10 @@
     --plot-bg: #ffffff;
     --plot-text: #000000;
     --plot-grid: #dddddd;
-    --plot-temp-1: #FF3333;
+    --plot-temp-1: #d12676;
     --plot-temp-2: #FF9999;
-    --plot-humid-1: #3399FF;
-    --plot-humid-2: #99CCFF;
+    --plot-humid-1: #02630f;
+    --plot-humid-2: #72a178;
     --chart-grid: #dddddd;
 }
 
@@ -52,16 +52,16 @@
         --copy-button-hover: #666;
         --link-color: #58a6ff;
         --card-bg: #363636;
-        --moisture-border: #72a178;
-        --moisture-reading-bg: #3d4d40;
+        --moisture-border: #d56097;
+        --moisture-reading-bg: #4d3d48;
         --plant-sensor-bg: #4a5d4a;
         --plot-bg: #2d2d2d;
         --plot-text: #e0e0e0;
         --plot-grid: #404040;
-        --plot-temp-1: #FF4444;
-        --plot-temp-2: #FFB3B3;
-        --plot-humid-1: #4DB8FF;
-        --plot-humid-2: #B3E0FF;
+        --plot-temp-1: #d12676;
+        --plot-temp-2: #FF9999;
+        --plot-humid-1: #02630f;
+        --plot-humid-2: #72a178;
         --chart-grid: #404040;
     }
 }
