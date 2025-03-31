@@ -464,7 +464,7 @@ function createPlotlyChart(data) {
         config
     );
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', async () => {
         // Redraw the chart with current data to update colors
         const historicalData = await fetchHistoricalSensorData(currentTimeRange);
         if (historicalData) {
