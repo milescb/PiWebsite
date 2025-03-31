@@ -28,6 +28,7 @@
     --plot-temp-2: #FF9999;
     --plot-humid-1: #3399FF;
     --plot-humid-2: #99CCFF;
+    --chart-grid: #dddddd;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -61,5 +62,6 @@
         --plot-temp-2: #FFB3B3;
         --plot-humid-1: #4DB8FF;
         --plot-humid-2: #B3E0FF;
+        --chart-grid: #404040;
     }
 }

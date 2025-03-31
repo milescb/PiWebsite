@@ -244,6 +244,13 @@ function drawMoistureChart(container, data, plantName) {
     minMoisture = Math.max(0, minMoisture - moisturePadding);
     maxMoisture = Math.min(100, maxMoisture + moisturePadding);
     
+   // Get theme colors from CSS variables
+    const style = getComputedStyle(document.documentElement);
+    const plotBg = style.getPropertyValue('--chart-bg').trim();
+    const textColor = style.getPropertyValue('--text-color').trim();
+    const accentColor = style.getPropertyValue('--accent-color').trim();
+    const gridColor = style.getPropertyValue('--border-color').trim();
+    
     // Create main moisture trace
     const moistureTrace = {
         x: timestamps,
@@ -252,28 +259,45 @@ function drawMoistureChart(container, data, plantName) {
         mode: 'lines',
         name: 'Moisture',
         line: {
-            color: '#72a178',
+            color: accentColor,
             width: 2
         },
         connectgaps: true
     };
     
-    // Create layout
+    // Create layout with theme-aware colors
     const layout = {
+        paper_bgcolor: plotBg,
+        plot_bgcolor: plotBg,
+        font: {
+            color: textColor
+        },
         xaxis: {
             tickformat: '%m/%d',
-            hoverformat: '%b %d, %Y %H:%M'
+            hoverformat: '%b %d, %Y %H:%M',
+            gridcolor: gridColor,
+            linecolor: gridColor,
+            tickcolor: textColor,
+            tickfont: {
+                color: textColor
+            }
         },
         yaxis: {
             title: {
                 text: 'Moisture (%)',
                 font: {
                     size: 14,
-                    color: '#444'
+                    color: textColor
                 },
-                standoff: 15 // Adds spacing between axis and title
+                standoff: 15
             },
-            range: [minMoisture, maxMoisture]
+            range: [minMoisture, maxMoisture],
+            gridcolor: gridColor,
+            linecolor: gridColor,
+            tickcolor: textColor,
+            tickfont: {
+                color: textColor
+            }
         },
         margin: {
             l: 60,
@@ -339,6 +363,21 @@ function initializePlantsData() {
     PLANTS.forEach(plant => {
         // Fetch initial current data
         fetchPlantData(plant);
+
+        // Add theme change listener
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            PLANTS.forEach(plant => {
+                const plotElement = document.getElementById(`plot-${plant.id}`);
+                if (plotElement) {
+                    fetchMoistureHistory(plant.id).then(data => {
+                        if (data) {
+                            data.plantId = plant.id;
+                            drawMoistureChart(plotElement, data, plant.name);
+                        }
+                    });
+                }
+            });
+        });
         
         // // Display last watered time from localStorage
         // displayLastWatered(plant);
