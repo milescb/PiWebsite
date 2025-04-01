@@ -3,7 +3,7 @@
     position: absolute;
     top: 5px;
     right: 5px;
-    background-color: var(--copy-button-bg);;
+    background-color: var(--copy-button-bg);
     color: var(--header-text);
     border: none;
     padding: 5px 10px;
@@ -36,13 +36,13 @@
 
 #markdown-content h1 {
     font-size: 2em;
-    border-bottom: 1px solid var(--markdown-border);;
+    border-bottom: 1px solid var(--markdown-border);
     padding-bottom: 0.3em;
 }
 
 #markdown-content h2 {
     font-size: 1.5em;
-    border-bottom: 1px solid var(--markdown-border);;
+    border-bottom: 1px solid var(--markdown-border);
     padding-bottom: 0.3em;
 }
 
@@ -80,7 +80,7 @@
 
 #markdown-content table th {
     font-weight: 600;
-    background-color: #f6f8fa;
+    background-color: var(--code-bg);
 }
 
 /* GitHub-like code block styling */
