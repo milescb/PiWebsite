@@ -98,7 +98,7 @@ async function fetchPlantData(plant) {
     try {
         const data = await fetchSensorData(plant.dataUrl);
         if (data && data.moisture !== undefined) {
-            document.getElementById(plant.id).textContent = data.moisture.toFixed(1);
+            document.getElementById(plant.id).textContent = Math.round(data.moisture.toFixed(1));
             document.getElementById(`last-updated-${plant.id}`).textContent = 
                 `Last updated: ${formatShortDateTime(new Date(data.timestamp))}`;
         } else {
@@ -113,7 +113,6 @@ async function fetchPlantData(plant) {
 function handleWatering(plant) {
     const now = new Date();
     localStorage.setItem(plant.storageKey, now.toISOString());
-    // displayLastWatered(plant);
     
     // Refresh the chart to show the new watering marker
     const plotContainer = document.getElementById(`plot-${plant.id}`);
@@ -125,31 +124,6 @@ function handleWatering(plant) {
             }
         });
     }
-}
-
-function displayLastWatered(plant) {
-    const lastWateredElement = document.getElementById(`last-watered-${plant.id}`);
-    const lastWateredTime = localStorage.getItem(plant.storageKey);
-
-    const date = new Date(lastWateredTime);
-    // Create a wrapper div to hold the two lines
-    lastWateredElement.innerHTML = '';
-    
-    // Create label line
-    const labelElement = document.createElement('div');
-    labelElement.textContent = 'Last Watered:';
-    
-    // Create date line
-    const dateElement = document.createElement('div');
-    
-    if (lastWateredTime) {
-        dateElement.textContent = formatShortDateTime(date);
-    } else {
-        dateElement.textContent = 'Never';
-    }
-    // Append both to the container
-    lastWateredElement.appendChild(labelElement);
-    lastWateredElement.appendChild(dateElement);
 }
 
 async function fetchMoistureHistory(plantId) {
@@ -309,46 +283,6 @@ function drawMoistureChart(container, data, plantName) {
         annotations: []
     };
     
-    // // Add watering marker if available
-    // const lastWateredTime = localStorage.getItem(`lastWatered_${data.plantId}`);
-    // if (lastWateredTime) {
-    //     const waterDate = new Date(lastWateredTime);
-    //     const startDate = timestamps[0];
-    //     const endDate = timestamps[timestamps.length - 1];
-        
-    //     // Check if water date is within the chart time range
-    //     if (waterDate >= startDate && waterDate <= endDate) {
-    //         // Add vertical line for watering
-    //         layout.shapes.push({
-    //             type: 'line',
-    //             x0: waterDate,
-    //             y0: 0,
-    //             x1: waterDate,
-    //             y1: 1,
-    //             yref: 'paper',
-    //             line: {
-    //                 color: '#d56097',
-    //                 width: 2,
-    //                 dash: 'dash'
-    //             }
-    //         });
-            
-    //         // Add watering annotation
-    //         layout.annotations.push({
-    //             x: waterDate,
-    //             y: 1,
-    //             yref: 'paper',
-    //             text: 'Watered',
-    //             showarrow: false,
-    //             font: {
-    //                 color: '#d56097',
-    //                 size: 12
-    //             },
-    //             yshift: 15
-    //         });
-    //     }
-    // }
-    
     // Define configuration with responsive behavior
     const config = {
         responsive: true,
@@ -378,15 +312,6 @@ function initializePlantsData() {
                 }
             });
         });
-        
-        // // Display last watered time from localStorage
-        // displayLastWatered(plant);
-        
-        // Add event listener for the Watered! button
-        const waterButton = document.querySelector(`#water-btn-${plant.id}`);
-        if (waterButton) {
-            waterButton.addEventListener('click', () => handleWatering(plant));
-        }
         
         // Update canvas elements to divs for Plotly
         const plotCanvas = document.getElementById(`plot-${plant.id}`);
