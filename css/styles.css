@@ -28,6 +28,16 @@ header h1 {
     padding-bottom: 10px;
 }
 
+main a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+main a:hover {
+    text-decoration: underline;
+}
+
 nav ul {
     list-style-type: none;
     padding: 0;
