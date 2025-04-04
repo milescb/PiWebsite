@@ -10,21 +10,34 @@
     <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
     <script src="js/sensor-display.js" defer></script>
     <script src="js/theme-handler.js" defer></script>
+    <script src="js/toc.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Home Environment Monitor</h1>
+    <header>
+        <div class="header-content">
             <nav>
                 <ul>
-                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="../index.html" class="active">Home</a></li>
                     <li><a href="pages/plants.html">Plants</a></li>
                     <li><a href="pages/info.html">Info</a></li>
                     <li><a href="pages/crab-rave.html">Rave</a></li>
                 </ul>
             </nav>
-        </header>
+        </div>
+    </header>
+    <div class="container">
+        <h1>Home Environment Monitor</h1>
         <main>
+            <h2>About</h2>
+            
+            <p>
+                This website functions as a fun way for me to learn about web development and the Internet of Things (IoT). I have set up several monitors throughout my apartment to track the temperature and humidity in each room, as well as monitor the moisture levels of my plants. I then track the readings obtained over time and display them below for temperature and humidity, and next to each plant for moisture levels on the <a href="pages/plants.html">Plants</a> page.
+            </p> 
+            
+            <p>
+                You can find a detailed description of the project and its components in the <a href="pages/info.html">Info</a> section, and I post all the code that hosts this site on <a href="https://github.com/milescb/PiWebsite">GitHub</a>.
+            </p>
+
             <h2>Current Environment Readings</h2>
             
             <div id="sensor-display">
@@ -63,17 +76,7 @@
                 </div>
             </div>
 
-            <h2>About</h2>
-            
-            <p>
-                This website functions as a fun way for me to learn about web development and the Internet of Things (IoT). I have set up several monitors throughout my apartment to track the temperature and humidity in each room, as well as monitor the moisture levels of my plants. I then track the readings obtained over time and display them below for temperature and humidity, and next to each plant for moisture levels on the <a href="pages/plants.html">Plants</a> page.
-            </p> 
-            
-            <p>
-                You can find a detailed description of the project and its components in the <a href="pages/info.html">Info</a> section, and I post all the code that hosts this site on <a href="https://github.com/milescb/PiWebsite">GitHub</a>.
-            </p>
-
-            <h2>Reading History</h2>
+            <h2>Temperature and Humidity History</h2>
             
             <div class="chart-container">
                 <div class="chart-controls">

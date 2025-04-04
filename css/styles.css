@@ -19,27 +19,45 @@ body {
 header {
     background-color: var(--header-bg);
     color: var(--header-text);
-    padding: 1rem;
-    text-align: center;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    box-shadow: 0 1px 2px var(--shadow-color);
 }
 
-header h1 {
-    margin: 0;
-    padding-bottom: 10px;
+.header-content {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    padding: 0 20px;
 }
 
-main a {
-    color: var(--link-color);
-    text-decoration: none;
-    transition: color 0.2s;
+.primary-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
 }
 
-main a:hover {
-    text-decoration: underline;
+/* Contents dropdown on the right */
+.toc-dropdown {
+    margin-left: auto; /* This pushes the element to the right */
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
 }
 
 nav ul {
-    list-style-type: none;
+    display: flex;
+    gap: 4px;
+    margin: 0;
     padding: 0;
 }
 
@@ -63,8 +81,156 @@ main {
     padding: 20px 0;
 }
 
-h2 {
+h1 {
+    font-size: 2rem;
+    margin: 0;
+    color: var(--title-text);
+}
+
+h2, h3 {
     color: var(--accent-color);
+    scroll-margin-top: 80px;
+}
+
+/* Dropdown Styles - Enhanced */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-button {
+    background: none;
+    border: none;
+    color: var(--header-text);
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    display: ;
+    align-items: center;
+    gap: 4px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-button:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--container-bg);
+    min-width: 260px;
+    box-shadow: 0 8px 24px var(--shadow-color);
+    border-radius: 6px;
+    padding: 8px 0;
+    margin-top: 8px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-content.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Table of Contents List Styles - Fixed for full-width active highlighting */
+.toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.toc-item {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Clear base padding first to avoid conflicts */
+.toc-list a {
+    display: block;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 16px 6px 16px; /* Consistent padding on all sides */
+}
+
+/* Apply specific indentation for different header levels */
+.toc-h2 a {
+    padding-left: 16px;
+    font-weight: 500;
+}
+
+.toc-h3 a {
+    padding-left: 32px;
+    font-size: 0.95em;
+}
+
+.toc-list a:hover, 
+.toc-list a:focus {
+    background-color: var(--sensor-card-bg);
+    color: var(--accent-color);
+}
+
+.toc-list a.active {
+    background-color: var(--sensor-card-bg);
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+/* Dropdown content should use flex for vertical layout */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--container-bg);
+    min-width: 260px;
+    box-shadow: 0 8px 24px var(--shadow-color);
+    border-radius: 6px;
+    padding: 8px 0;
+    margin-top: 8px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    display: none; /* Hidden by default but will use flex when shown */
+}
+
+.dropdown-content.show {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 footer {
@@ -79,8 +245,22 @@ footer p {
     opacity: 0.8;
 }
 
+main a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+main a:hover {
+    text-decoration: underline;
+}
+
 @media screen and (max-width: 600px) {
     .container {
         padding: 10px;
+    }
+
+    main {
+        max-width: 100%;
     }
 }

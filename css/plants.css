@@ -1,3 +1,11 @@
+h2 {
+    text-align: center;
+    color: var(--accent-color);
+    margin: 2rem 0;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--markdown-border);
+}
+
 .card {
     display: flex;
     width: 800px;

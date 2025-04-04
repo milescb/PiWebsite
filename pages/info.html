@@ -14,18 +14,18 @@
     <!-- Showdown for Markdown conversion -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
     
-    <!-- Prism JS with languages you need -->
+    <!-- Prism JS with languages needed -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     
     <!-- Your custom JS -->
     <script defer src="../js/markdown-loader.js"></script>
     <script defer src="../js/theme-handler.js"></script>
+    <script defer src="../js/toc.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Documentation</h1>
+    <header>
+        <div class="header-content">
             <nav>
                 <ul>
                     <li><a href="../index.html">Home</a></li>
@@ -34,11 +34,11 @@
                     <li><a href="crab-rave.html">Rave</a></li>
                 </ul>
             </nav>
-        </header>
+        </div>
+    </header>
+    <div class="container">
+        <h1>Documentation</h1>
         <main>
-            <h2>Table of Contents</h2>
-            <nav id="table-of-contents"></nav> <!-- ToC will be inserted here -->
-        
             <div id="markdown-content" data-markdown="../content/documentation.md">Loading...</div>
         </main>
         <footer>

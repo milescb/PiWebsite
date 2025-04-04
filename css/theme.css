@@ -5,6 +5,7 @@
     --text-color: #515151;
     --header-bg: #72a178;
     --header-text: #ffd1e7;
+    --title-text: #cf327b;
     --accent-color: #d56097;
     --sensor-card-bg: #cddfcfdc;
     --sensor-reading-bg: rgba(255, 255, 255, 0.5);
@@ -29,6 +30,11 @@
     --plot-humid-1: #02630f;
     --plot-humid-2: #72a178;
     --chart-grid: #dddddd;
+    --copy-button-bg: #f6f8fa;
+    --copy-button-text: #57606a;
+    --copy-button-border: #d0d7de;
+    --copy-button-hover-bg: #f3f4f6;
+    --copy-button-hover-text: #24292f;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -39,6 +45,7 @@
         --text-color: #e0e0e0;
         --header-bg: #3a4d3e;
         --header-text: #ffd1e7;
+        --title-text: #ffd1e7;
         --accent-color: #72a178;
         --sensor-card-bg: #3d4d40;
         --sensor-reading-bg: rgba(0, 0, 0, 0.2);
@@ -63,5 +70,10 @@
         --plot-humid-1: #02630f;
         --plot-humid-2: #72a178;
         --chart-grid: #404040;
+        --copy-button-bg: #2b2b2b;
+        --copy-button-text: #e0e0e0;
+        --copy-button-border: #444;
+        --copy-button-hover-bg: #3d3d3d;
+        --copy-button-hover-text: #ffffff;
     }
 }

@@ -1,19 +1,21 @@
 /* Style for copy buttons */
 .copy-button {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 8px;
+    right: 8px;
     background-color: var(--copy-button-bg);
-    color: var(--header-text);
-    border: none;
-    padding: 5px 10px;
+    color: var(--copy-button-text);
+    border: 1px solid var(--copy-button-border);
+    padding: 4px 10px;
     font-size: 0.8em;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 6px;
+    transition: 0.1s;
 }
 
 .copy-button:hover {
-    background-color: var(--copy-button-hover);
+    background-color: var(--copy-button-hover-bg);
+    color: var(--copy-button-hover-text);
 }
 
 /* Markdown content */
