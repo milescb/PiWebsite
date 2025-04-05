@@ -380,7 +380,29 @@ function createPlotlyChart(data) {
             gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-grid').trim(),
             tickcolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim(),
             linecolor: getComputedStyle(document.documentElement).getPropertyValue('--plot-text').trim(),
-            tickformat: '%H:%M'
+            type: 'date',
+            
+            // Use calendar day as the base tick unit
+            tickmode: 'auto',
+            nticks: isMobile ? 5 : 8,
+            tickformat: '%H:%M',
+            tickformatstops: [
+                {
+                    "dtickrange": [86400000, 604800000],  // 1 day to 1 week
+                    "value": "%a %d"  // Show day of week and date at day boundaries
+                },
+                {
+                    "dtickrange": [604800000, "M1"],  // 1 week to 1 month
+                    "value": "%b %d"  // Show month and day
+                },
+                {
+                    "dtickrange": ["M1", null],  // More than a month
+                    "value": "%b %d"  // Show month and day
+                }
+            ],
+            
+            // Show full info on hover
+            hoverformat: '%b %d, %H:%M'
         },
         yaxis: {
             title: {
@@ -424,7 +446,7 @@ function createPlotlyChart(data) {
         margin: {
             l: isMobile ? 40 : 60,
             r: isMobile ? 40 : 60,
-            t: isMobile ? 50 : 80,
+            t: isMobile ? 50 : 60,
             b: isMobile ? 80 : 60,
             pad: 4
         },
