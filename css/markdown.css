@@ -111,39 +111,6 @@ pre code {
     font-size: 100%;
 }
 
-/* Fix for the copy button positioning */
 pre {
     position: relative;
-}
-
-/* Style for ToC */
-#table-of-contents {
-    background: var(--code-bg);
-    padding: 20px;
-    border-left: 4px solid var(--accent-color);
-    border-bottom: none;
-}
-
-#table-of-contents ul {
-    list-style: none;
-    padding-left: 10px;
-    margin: 2pt;
-}
-
-#table-of-contents li {
-    margin-bottom: 0px;
-}
-
-#table-of-contents a {
-    display: block;
-    text-decoration: none;
-    color: var(--text-color);
-    font-weight: bold;
-    font-size: 18px; 
-    line-height: 0.3; 
-    padding: 1px 0;
-}
-
-#table-of-contents a:hover {
-    text-decoration: underline;
 }

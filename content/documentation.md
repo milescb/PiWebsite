@@ -1,6 +1,4 @@
-## Overview
-
-Below, I document the deployment of this webpage. The code that hosts this site is located [on github](https://github.com/milescb/PiWebsite) and the whole website is hosted on a Raspberry Pi Zero 2w running [nginx](https://nginx.org/en/).
+## Hardware and Software
 
 Hardware
 

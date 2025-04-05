@@ -23,11 +23,18 @@ function createTableOfContents() {
     const tocList = document.createElement('ul');
     
     // Set attributes and content
-    dropdown.className = 'dropdown toc-dropdown'; // Add toc-dropdown class
+    dropdown.className = 'dropdown toc-dropdown';
     button.className = 'dropdown-button';
     button.setAttribute('aria-expanded', 'false');
     button.setAttribute('aria-controls', 'toc-dropdown');
-    button.innerHTML = 'Contents <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>';
+    button.innerHTML = '<svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">' +
+    '<circle cx="4" cy="8" r="1.5" fill="currentColor" />' +
+    '<line x1="8" y1="8" x2="20" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />' +
+    '<circle cx="4" cy="14" r="1.5" fill="currentColor" />' +
+    '<line x1="8" y1="14" x2="20" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />' +
+    '<circle cx="4" cy="20" r="1.5" fill="currentColor" />' +
+    '<line x1="8" y1="20" x2="20" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />' +
+    '</svg>';
     
     dropdownContent.className = 'dropdown-content';
     dropdownContent.id = 'toc-dropdown';
