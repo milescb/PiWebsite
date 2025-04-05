@@ -384,7 +384,7 @@ conn.close()
 
 ## Website monitoring
 
-I use [`goaccess`](https://goaccess.io) to monitor website pings. Install (or build from source). Then, I run a cron job in the background over this script:
+I use [`goaccess`](https://goaccess.io) to monitor website pings. Install (or build from source), and install the [GeoLite databases](https://dev.maxmind.com/geoip/updating-databases/). Then, I run a cron job in the background over this script:
 
 ```bash
 #!/bin/bash
@@ -399,10 +399,16 @@ cat /var/log/nginx/access.log /var/log/nginx/access.log.1 \
 
 # Run GoAccess on the combined log
 /usr/local/bin/goaccess /tmp/combined_access.log \
-    -o /home/milescb/PiWebsite/report.html --log-format=COMBINED
+    -o /home/milescb/PiWebsite/report.html --log-format=COMBINED \
+    --geoip-database=/usr/local/share/GeoIP/GeoLite2-City.mmdb
 
 # Clean up temp file
 rm /tmp/all_access_logs.log /tmp/combined_access.log
+```
+as well as a crontab to periodically re-download the mmdb:
+
+```
+/usr/bin/geoipupdate -v -d /usr/local/share/GeoIP/ >> /var/log/geoipupdate.log 2>&1
 ```
 
 We should secure this page. To do this, create a username and password with:
