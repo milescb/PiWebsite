@@ -444,8 +444,8 @@ function createPlotlyChart(data) {
             }
         },
         margin: {
-            l: isMobile ? 40 : 60,
-            r: isMobile ? 40 : 60,
+            l: isMobile ? 50 : 60,
+            r: isMobile ? 50 : 60,
             t: isMobile ? 50 : 60,
             b: isMobile ? 80 : 60,
             pad: 4
