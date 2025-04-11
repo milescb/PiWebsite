@@ -33,7 +33,7 @@ def init_db(use_indexes=False):
     conn.close()
 
 # MQTT Configuration
-MQTT_BROKER = "10.0.0.32"
+MQTT_BROKER = "10.0.0.253"
 MQTT_PORT = 1883
 MQTT_TOPICS = [
     ("sensor/temperature/livingroom", 1),
