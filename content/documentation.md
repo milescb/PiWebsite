@@ -432,6 +432,66 @@ Then, restart `nginx`
 sudo systemctl restart nginx
 ```
 
+## Running custom processes in the background
+
+Once we have our api script and mqtt listener, it would be nice to have these start at boot and run in the background. The two processes I have are configured with:
+
+```
+# /etc/systemd/system/piwebsite-api.service
+[Unit]
+Description=Gunicorn server for sqlite_api Flask app
+After=network.target
+
+[Service]
+User=milescb
+WorkingDirectory=/home/milescb/PiWebsite/python
+ExecStart=/home/milescb/PiWebsite/.venv/bin/gunicorn --bind 0.0.0.0:5000 --worker-class gevent --max-requests 1000 --timeout 30 sqlite_api:app
+Restart=always
+Environment="PATH=/home/milescb/PiWebsite/.venv/bin"
+
+[Install]
+WantedBy=multi-user.target
+```
+and
+
+```
+# /etc/systemd/system/mqtt-subscriber.service
+[Unit]
+Description=MQTT Subscriber for sensor data
+After=network.target
+
+[Service]
+User=milescb
+WorkingDirectory=/home/milescb/PiWebsite
+ExecStart=/home/milescb/PiWebsite/.venv/bin/python python/subscribe.py
+Restart=always
+Environment="PATH=/home/milescb/PiWebsite/.venv/bin"
+
+[Install]
+WantedBy=multi-user.target
+```
+Let's get this enabled to run at system boot
+```bash
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable piwebsite-api.service
+sudo systemctl enable mqtt-subscriber.service
+```
+
+then start them:
+
+```bash
+sudo systemctl start piwebsite-api
+sudo systemctl start mqtt-subscriber
+```
+
+Finally, check the logs with:
+
+```bash
+journalctl -u piwebsite-api -f
+journalctl -u mqtt-subscriber -f
+```
+
 ## Login Display
 
 Edit `/etc/motd` and put your login message there:

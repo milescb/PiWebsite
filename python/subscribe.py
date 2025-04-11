@@ -31,7 +31,7 @@ def init_db(use_indexes=False):
     ''')
     conn.commit()
     conn.close()
-   
+
 # MQTT Configuration
 MQTT_BROKER = "10.0.0.32"
 MQTT_PORT = 1883
@@ -54,26 +54,26 @@ MQTT_CLIENT_ID = "sensor_subscriber"
 
 def save_current_readings(value, sensor_type, location, timestamp):
     """Save the latest reading in a JSON file (stored in RAM)."""
-    with open(f"/dev/shm/{sensor_type}_{location}.json", 'w') as file:
+    with open(f"data/json_data/{sensor_type}_{location}.json", 'w') as file:
         json.dump({sensor_type: value, "timestamp": timestamp}, file)
 
 def batch_write_to_db():
     """Writes accumulated sensor data to the database in batch mode."""
     global data_buffer
     while True:
-        time.sleep(BATCH_INTERVAL) 
+        time.sleep(BATCH_INTERVAL)
         with BUFFER_LOCK:
-            if data_buffer: 
+            if data_buffer:
                 try:
                     conn = sqlite3.connect(DB_FILE)
                     cursor = conn.cursor()
 
                     # Apply SQLite optimizations
-                    cursor.execute("PRAGMA journal_mode=WAL;")  
-                    cursor.execute("PRAGMA synchronous=NORMAL;")  
-                    cursor.execute("PRAGMA temp_store=MEMORY;")  
-                    cursor.execute("PRAGMA cache_size=-4096;")  
-                    cursor.execute("PRAGMA busy_timeout=3000;")  
+                    cursor.execute("PRAGMA journal_mode=WAL;")
+                    cursor.execute("PRAGMA synchronous=NORMAL;")
+                    cursor.execute("PRAGMA temp_store=MEMORY;")
+                    cursor.execute("PRAGMA cache_size=-4096;")
+                    cursor.execute("PRAGMA busy_timeout=3000;")
 
                     # Batch insert
                     cursor.executemany('''

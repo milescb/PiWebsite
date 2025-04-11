@@ -129,7 +129,7 @@ function handleWatering(plant) {
 async function fetchMoistureHistory(plantId) {
     try {
         // Always request 7-day data
-        const response = await fetch(`${SENSOR_HISTORY_API_URL}?sensor_type=moisture&location=${plantId}&range=7d`);
+        const response = await fetch(`${SENSOR_HISTORY_API_URL}?sensor_type=moisture&location=${plantId}&range=14d`);
         if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.status}`);
         }
