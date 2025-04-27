@@ -66,25 +66,17 @@
 }
 
 /* Chart styling */
-.chart-container {
-    /* margin-top: 2rem;
-    padding: 1.5rem;
-    background-color: var(--chart-bg);
-    border-radius: 8px;
-    box-shadow: 0 1px 3px var(--shadow-color); */
-}
-  
-.chart-controls {
+h2 .chart-controls {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.8rem;
+    gap: 8px; 
 }
-  
-.chart-controls label {
-    margin-right: 10px;
-    color: var(--text-color);
+
+h2 .chart-controls label {
+    font-size: 0.8rem; 
+    font-weight: normal; 
+    color: var(--text-color); 
+    margin: 0; 
 }
   
 #time-range-selector {

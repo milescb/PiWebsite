@@ -28,17 +28,8 @@
     <div class="container">
         <main>
             <h1>Home Environment Monitor</h1>
-            <h2>About</h2>
-            
-            <p>
-                This website functions as a fun way for me to learn about web development and the Internet of Things (IoT). I have set up several monitors throughout my apartment to track the temperature and humidity in each room, as well as monitor the moisture levels of my plants. I then track the readings obtained over time and display them below for temperature and humidity, and next to each plant for moisture levels on the <a href="pages/plants.html">Plants</a> page.
-            </p> 
-            
-            <p>
-                You can find a detailed description of the project and its components in the <a href="pages/info.html">Info</a> section, and I post all the code that hosts this site on <a href="https://github.com/milescb/PiWebsite">GitHub</a>.
-            </p>
 
-            <h2>Current Environment Readings</h2>
+            <!-- <h2>Current Environment Readings</h2> -->
             
             <div id="sensor-display">
                 <div class="sensor-card">
@@ -76,11 +67,19 @@
                 </div>
             </div>
 
-            <h2>Temperature and Humidity History</h2>
+            <h2>About</h2>
             
-            <div class="chart-container">
+            <p>
+                This website functions as a fun way for me to learn about web development and the Internet of Things (IoT). I have set up several monitors throughout my apartment to track the temperature and humidity in each room, as well as monitor the moisture levels of my plants. I then track the readings obtained over time and display them below for temperature and humidity, and next to each plant for moisture levels on the <a href="pages/plants.html">Plants</a> page.
+            </p> 
+            
+            <p>
+                You can find a detailed description of the project and its components in the <a href="pages/info.html">Info</a> section, and I post all the code that hosts this site on <a href="https://github.com/milescb/PiWebsite">GitHub</a>.
+            </p>
+
+            <h2>
+                Measurement History
                 <div class="chart-controls">
-                    <label for="time-range-selector">Time Range:</label>
                     <select id="time-range-selector">
                         <option value="1h">Last Hour</option>
                         <option value="6h">Last 6 Hours</option>
@@ -89,6 +88,9 @@
                         <option value="30d">Last Month</option>
                     </select>
                 </div>
+            </h2>
+            
+            <div class="chart-container">
                 <div id="history-chart"></div>
             </div>
         </main>

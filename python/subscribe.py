@@ -74,6 +74,7 @@ def batch_write_to_db():
                     cursor.execute("PRAGMA temp_store=MEMORY;")
                     cursor.execute("PRAGMA cache_size=-4096;")
                     cursor.execute("PRAGMA busy_timeout=3000;")
+                    cursor.execute("PRAGMA wal_autocheckpoint=100;")
 
                     # Batch insert
                     cursor.executemany('''
