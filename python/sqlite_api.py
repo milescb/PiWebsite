@@ -39,6 +39,10 @@ def get_historical_sensor_data():
             cutoff_time = now - datetime.timedelta(days=14)
         elif time_range == '30d':
             cutoff_time = now - datetime.timedelta(days=30)
+        elif time_range == '90d':
+            cutoff_time = now - datetime.timedelta(days=90)
+        elif time_range == '365d':
+            cutoff_time = now - datetime.timedelta(days=365)
         else:
             # Default to 24 hours
             cutoff_time = now - datetime.timedelta(hours=24)
