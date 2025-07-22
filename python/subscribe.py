@@ -33,7 +33,7 @@ def init_db(use_indexes=False):
     conn.close()
 
 # MQTT Configuration
-MQTT_BROKER = "10.0.0.253"
+MQTT_BROKER = "10.0.0.32"
 MQTT_PORT = 1883
 MQTT_TOPICS = [
     ("sensor/temperature/livingroom", 1),
@@ -54,7 +54,7 @@ MQTT_CLIENT_ID = "sensor_subscriber"
 
 def save_current_readings(value, sensor_type, location, timestamp):
     """Save the latest reading in a JSON file (stored in RAM)."""
-    with open(f"data/json_data/{sensor_type}_{location}.json", 'w') as file:
+    with open(f"website/json/{sensor_type}_{location}.json", 'w') as file:
         json.dump({sensor_type: value, "timestamp": timestamp}, file)
 
 def batch_write_to_db():

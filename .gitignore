@@ -1,8 +1,16 @@
-*.venv
+# data files
 *.json
 *.db
 *.db-shm
 *.db-wal
+*.db.backup
+*.jpg
+*.jpeg
+*.png
+*.mp4
+
+# other files
+*.venv
 report.html
 __pycache__
 *google*

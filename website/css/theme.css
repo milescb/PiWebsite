@@ -1,0 +1,79 @@
+:root {
+    /* Light theme (default) */
+    --bg-color: rgb(255, 255, 255);
+    --container-bg: #ffffff;
+    --text-color: #515151;
+    --header-bg: #72a178;
+    --header-text: #ffd1e7;
+    --title-text: #cf327b;
+    --accent-color: #d56097;
+    --sensor-card-bg: #cddfcfdc;
+    --sensor-reading-bg: rgba(255, 255, 255, 0.5);
+    --chart-bg: #f9f9f9;
+    --border-color: #eee;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --code-bg: #f6f8fa;
+    --markdown-border: #eaecef;
+    --table-stripe: #f6f8fa;
+    --copy-button-bg: #007bff;
+    --copy-button-hover: #0056b3;
+    --link-color: #0366d6;
+    --card-bg: #ffffff;
+    --moisture-border: #d56097;
+    --moisture-reading-bg: #fce5f0;
+    --plant-sensor-bg: #9fb89f;
+    --plot-bg: #ffffff;
+    --plot-text: #000000;
+    --plot-grid: #dddddd;
+    --plot-temp-1: #d12676;
+    --plot-temp-2: #FF9999;
+    --plot-humid-1: #02630f;
+    --plot-humid-2: #72a178;
+    --chart-grid: #dddddd;
+    --copy-button-bg: #f6f8fa;
+    --copy-button-text: #57606a;
+    --copy-button-border: #d0d7de;
+    --copy-button-hover-bg: #f3f4f6;
+    --copy-button-hover-text: #24292f;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Dark theme */
+        --bg-color: #1a1a1a;
+        --container-bg: #2d2d2d;
+        --text-color: #e0e0e0;
+        --header-bg: #3a4d3e;
+        --header-text: #ffd1e7;
+        --title-text: #ffd1e7;
+        --accent-color: #72a178;
+        --sensor-card-bg: #3d4d40;
+        --sensor-reading-bg: rgba(0, 0, 0, 0.2);
+        --chart-bg: #2d2d2d;
+        --border-color: #444;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+        --code-bg: #2b2b2b;
+        --markdown-border: #404040;
+        --table-stripe: #333;
+        --copy-button-bg: #4d4d4d;
+        --copy-button-hover: #666;
+        --link-color: #58a6ff;
+        --card-bg: #363636;
+        --moisture-border: #d56097;
+        --moisture-reading-bg: #4d3d48;
+        --plant-sensor-bg: #4a5d4a;
+        --plot-bg: #2d2d2d;
+        --plot-text: #e0e0e0;
+        --plot-grid: #404040;
+        --plot-temp-1: #d12676;
+        --plot-temp-2: #FF9999;
+        --plot-humid-1: #02630f;
+        --plot-humid-2: #72a178;
+        --chart-grid: #404040;
+        --copy-button-bg: #2b2b2b;
+        --copy-button-text: #e0e0e0;
+        --copy-button-border: #444;
+        --copy-button-hover-bg: #3d3d3d;
+        --copy-button-hover-text: #ffffff;
+    }
+}

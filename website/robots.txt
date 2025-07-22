@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /pages/
+Disallow: /api/
+Disallow: /data/
+
+# Prevent access to data files
+Disallow: /*.json$
+Disallow: /*.csv$
+
+# Add reasonable crawl delay
+Crawl-delay: 10
+
+Sitemap: https://rain.crabdance.com/sitemap.xml

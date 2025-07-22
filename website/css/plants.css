@@ -1,0 +1,225 @@
+.card {
+    display: flex;
+    width: 800px;
+    height: 250px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    margin: 1rem 0;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    overflow: hidden;
+}
+  
+.section {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+}
+  
+.section:last-child {
+    border-right: none;
+}
+  
+.image-section {
+    position: relative;
+}
+  
+.image-container {
+    flex: 1;
+    background-color: var(--code-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+  
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+  
+.common-name {
+    margin-top: 5px;
+    font-size: 16px;
+    color: var(--text-color);
+    font-weight: bold;
+    text-align: center;
+}
+
+.scientific-name {
+    margin-top: -5px;
+    font-size: 14px;
+    color: var(--text-color);
+    font-style: italic;
+    text-align: center;
+}
+  
+.moisture-card {
+    background-color: var(--card-bg);
+    overflow: hidden;
+    padding: 20px;
+}
+  
+.moisture-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+  
+.button-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+  
+.button {
+    padding: 10px 10px;
+    background-color: #d56097;
+    color: #ffd1e7;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-right: 15px;
+}
+  
+.button:hover {
+    background-color: #72a178;
+}
+
+.range-reading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 15px;
+    background-color: var(--moisture-reading-bg);
+    border: 2px solid var(--moisture-border);
+    border-radius: 6px;
+    margin: 15px 0;
+}
+  
+.range-label {
+    font-weight: bold;
+    color: var(--text-color);
+    font-size: 15px;
+    text-align: left;
+    flex: 1;
+}
+  
+.range-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0.5rem;
+    color: var(--text-color);
+    margin-left: 20px;
+}
+  
+.sensor-reading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 15px;
+    background-color: var(--plant-sensor-bg);
+    border-radius: 6px;
+    margin: 15px 0;
+}
+
+.sensor-label {
+    font-weight: bold;
+    color: var(--text-color);
+    font-size: 15px;
+    text-align: left;
+    flex: 1;
+}
+
+.sensor-value-container {
+    display: flex;
+    align-items: baseline;
+}
+
+.sensor-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0.5rem;
+    color: var(--text-color);
+}
+
+.sensor-unit {
+    font-size: 14px;
+    color: var(--text-color);
+}
+  
+.last-updated {
+    text-align: center;
+    color: var(--text-color);
+    font-style: italic;
+    font-size: 14px;
+}
+  
+.plot-section {
+    background-color: var(--chart-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+  
+.plot {
+    width: 100%;
+    height: 100%;
+    background-color: var(--chart-bg);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+  
+div.plot {
+    overflow: visible;
+}
+
+@media screen and (max-width: 600px) {
+    .card {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+    }
+    
+    .section {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px;
+    }
+    
+    .section:last-child {
+        border-bottom: none;
+    }
+    
+    .image-container {
+        min-height: 120px;
+        max-height: 200px;
+    }
+    
+    .plot-section {
+        min-height: 250px;
+        position: relative;
+        display: block;
+    }
+      
+    .plot {
+        position: relative; 
+        height: 250px;
+        width: 100%;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+    }
+}
