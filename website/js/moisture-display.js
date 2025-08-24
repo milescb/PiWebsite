@@ -1,61 +1,30 @@
-const SENSOR_HISTORY_API_URL = '../api/sensor_data/history';
-const UPDATE_INTERVAL = 60000;
-const PLANTS = [
-    {
-        id: 'spotted_begonia',
-        name: 'Spotted Begonia',
-        dataUrl: '../json/moisture_spotted_begonia.json',
-        storageKey: 'lastWatered_begonia'
-    },
-    {
-        id: 'snake_plant',
-        name: 'Snake Plant',
-        dataUrl: '../json/moisture_snake_plant.json',
-        storageKey: 'lastWatered_snake_plant'
-    },
-    {
-        id: 'asparagus_fern',
-        name: 'Asparagus Fern',
-        dataUrl: '../json/moisture_asparagus_fern.json',
-        storageKey: 'lastWatered_fern'
-    },
-    {
-        id: 'jade_plant',
-        name: 'Jade Plant',
-        dataUrl: '../json/moisture_jade_plant.json',
-        storageKey: 'lastWatered_jade'
-    },
-    {
-        id: 'rubber_plant',
-        name: 'Rubber Plant',
-        dataUrl: '../json/moisture_rubber_plant.json',
-        storageKey: 'lastWatered_rubber'
-    },
-    {
-        id: 'prayer_plant',
-        name: 'Prayer Plant',
-        dataUrl: '../json/moisture_prayer_plant.json',
-        storageKey: 'lastWatered_prayer',
-    },
-    {
-        id: 'norfolk_pine',
-        name: 'Norfolk Pine',
-        dataUrl: '../json/moisture_norfolk_pine.json',
-        storageKey: 'lastWatered_pine'
-    },
-    {
-        id: 'arrowhead_plant',
-        name: 'Pink Syngonium',
-        dataUrl: '../json/moisture_arrowhead_plant.json',
-        storageKey: 'lastWatered_arrow'
-    },
-    {
-        id: 'nanouk',
-        name: 'Fantasy Venice',
-        dataUrl: '../json/moisture_nanouk.json',
-        storageKey: 'lastWatered_nanouk'
+// Configuration will be loaded from JSON file
+let SENSOR_HISTORY_API_URL = '../api/sensor_data/history';
+let UPDATE_INTERVAL = 60000;
+let PLANTS = [];
+
+// Load configuration from JSON file
+async function loadPlantsConfig() {
+    try {
+        const response = await fetch('../config/plants-config.json');
+        if (!response.ok) {
+            throw new Error(`Failed to load config: ${response.status}`);
+        }
+        const config = await response.json();
+        
+        // Update global variables from config
+        SENSOR_HISTORY_API_URL = config.apiConfig.sensorHistoryUrl;
+        UPDATE_INTERVAL = config.apiConfig.updateInterval;
+        PLANTS = config.plants;
+        
+        return config;
+    } catch (error) {
+        console.error('Error loading plants configuration:', error);
+        // Fallback to empty array if config fails to load
+        PLANTS = [];
+        throw error;
     }
-];
+}
 
 // formate date as YYYY-MM-DD HH:MM:SS
 function formatDateTime(date) {
@@ -364,4 +333,24 @@ function initializePlantsData() {
     }, UPDATE_INTERVAL);
 }
 
-document.addEventListener('DOMContentLoaded', initializePlantsData);
+async function initializeApp() {
+    try {
+        // Load configuration first (if not already loaded)
+        if (PLANTS.length === 0) {
+            await loadPlantsConfig();
+            console.log(`Loaded ${PLANTS.length} plants from configuration`);
+        }
+        
+        // Initialize plants data after config is loaded
+        initializePlantsData();
+    } catch (error) {
+        console.error('Failed to initialize app:', error);
+        // You could show an error message to the user here
+    }
+}
+
+// Make functions available globally for dynamic loading
+window.loadPlantsConfig = loadPlantsConfig;
+window.initializeApp = initializeApp;
+
+document.addEventListener('DOMContentLoaded', initializeApp);
