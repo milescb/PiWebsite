@@ -1,0 +1,107 @@
+{
+  "apiConfig": {
+    "sensorHistoryUrl": "../api/sensor_data/history",
+    "updateInterval": 60000
+  },
+  "plants": [
+    {
+      "id": "spotted_begonia",
+      "name": "Spotted Begonia",
+      "commonName": "Spotted Begonia",
+      "scientificName": "Begonia Maculata",
+      "location": "Living Room",
+      "waterThreshold": 20,
+      "image": "../images/begonia.jpg",
+      "dataUrl": "../json/moisture_spotted_begonia.json",
+      "storageKey": "lastWatered_begonia"
+    },
+    {
+      "id": "prayer_plant",
+      "name": "Prayer Plant",
+      "commonName": "Prayer Plant",
+      "scientificName": "Maranta leuconeura",
+      "location": "Living Room",
+      "waterThreshold": 60,
+      "image": "../images/prayer_plant.jpg",
+      "dataUrl": "../json/moisture_prayer_plant.json",
+      "storageKey": "lastWatered_prayer"
+    },
+    {
+      "id": "norfolk_pine",
+      "name": "Norfolk Pine",
+      "commonName": "Norfolk Pine",
+      "scientificName": "Araucaria heterophylla",
+      "location": "Living Room",
+      "waterThreshold": 40,
+      "image": "../images/norfolk_pine.jpg",
+      "dataUrl": "../json/moisture_norfolk_pine.json",
+      "storageKey": "lastWatered_pine"
+    },
+    {
+      "id": "arrowhead_plant",
+      "name": "Pink Syngonium",
+      "commonName": "Pink Syngonium",
+      "scientificName": "Syngonium podophyllum",
+      "location": "Living Room",
+      "waterThreshold": 40,
+      "image": "../images/pink_arrow.jpeg",
+      "dataUrl": "../json/moisture_arrowhead_plant.json",
+      "storageKey": "lastWatered_arrow"
+    },
+    {
+      "id": "snake_plant",
+      "name": "Snake Plant",
+      "commonName": "Snake Plant",
+      "scientificName": "Dracaena Trifasciata",
+      "location": "Bedroom",
+      "waterThreshold": 45,
+      "image": "../images/snake_plant.png",
+      "dataUrl": "../json/moisture_snake_plant.json",
+      "storageKey": "lastWatered_snake_plant"
+    },
+    {
+      "id": "asparagus_fern",
+      "name": "Asparagus Fern",
+      "commonName": "Asparagus Fern",
+      "scientificName": "Asparagus Densiflorus",
+      "location": "Bedroom",
+      "waterThreshold": 30,
+      "image": "../images/asparagus.jpg",
+      "dataUrl": "../json/moisture_asparagus_fern.json",
+      "storageKey": "lastWatered_fern"
+    },
+    {
+      "id": "jade_plant",
+      "name": "Jade Plant",
+      "commonName": "Jade Plant",
+      "scientificName": "Crassula Ovata",
+      "location": "Bedroom",
+      "waterThreshold": 15,
+      "image": "../images/jade.jpg",
+      "dataUrl": "../json/moisture_jade_plant.json",
+      "storageKey": "lastWatered_jade"
+    },
+    {
+      "id": "rubber_plant",
+      "name": "Rubber Plant",
+      "commonName": "Pink Rubber Tree",
+      "scientificName": "Ficus Elastica Belize",
+      "location": "Bedroom",
+      "waterThreshold": 50,
+      "image": "../images/rubber.jpg",
+      "dataUrl": "../json/moisture_rubber_plant.json",
+      "storageKey": "lastWatered_rubber"
+    },
+    {
+      "id": "nanouk",
+      "name": "Fantasy Venice",
+      "commonName": "Fantasy Venice",
+      "scientificName": "Tradescantia albiflora 'Nanouk'",
+      "location": "Bedroom",
+      "waterThreshold": 40,
+      "image": "../images/nanouk.jpg",
+      "dataUrl": "../json/moisture_nanouk.json",
+      "storageKey": "lastWatered_nanouk"
+    }
+  ]
+}
