@@ -2,7 +2,110 @@
 
 This repository contains the code used to host [rain.crabdance.com](https://rain.crabdance.com/), a home environment and plant moisture monitoring system. The following contains instructions on how to get your own website running!
 
+### Website Main Page
+
+<p align="center">
+	<img src="examples/main.png" alt="Main Page" width="600"><br>
+	<!-- <em>Main Page (Light Mode)</em> -->
+</p>
+
+<p align="center">
+	<img src="examples/history.png" alt="Moisture History Chart" width="600"><br>
+	<!-- <em>Moisture History Chart Example</em> -->
+</p>
+
+### Website Plants Page
+
+<p align="center">
+	<img src="examples/plants.png" alt="Plants Page" width="600"><br>
+	<em>Light Mode</em>
+</p>
+
+<p align="center">
+	<img src="examples/plants_dark.png" alt="Plants Page Dark" width="600"><br>
+	<em>Dark Mode</em>
+</p>
+
+## Setting up website server 
+
+I use `nginx` as the server engine. To install, run:
+
+```bash
+sudo apt install nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+### Configuring a Domain
+
+I used [FreeDNS](https://freedns.afraid.org) to obtain a free domain name and subdomain for my example website. To get this running, forward the http port (port 80), and the https port (port 443) on your home router. Then, obtain the IP address of your home router, and configure your selected subdomain with FreeDNS. You can then use this free url in the below configuration!
+
+#### Warning!
+
+Exposing ports on your home internet can expose your device to attacks. In order to mitigate risks, ensure ssh is only enabled through ssh keys and do not forward port 22. Additionally, installing `fail2ban` and configuring a jail for the forwarded ports, as well as creating a firewall, for instance with `ufw`, provide additional security. I would also recommend additionally security measures, and understand all risks associated with port forwarding.  
+
+Note: If you would like to avoid these security challenges or, for an easier setup, consider just hosting the website on localhost (only accessible when connected to your home wifi network)
+
+### `nginx` configuration
+
+To configure you website, open the file `/etc/nginx/sites-available/default` and replace the current content with the below code, changing `<YOUR_URL>` to the one selected above and `<WEBSITE_LOCAL_DIR_LOCATION>` to the local location you plan on hosting your site from.
+
+```
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name <YOUR_URL>;
+
+    # Redirect HTTP to HTTPS
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    server_name <YOUR_URL>;
+
+    ssl_certificate /etc/letsencrypt/live/<YOUR_URL>/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/<YOUR_URL>/privkey.pem;
+
+    root <WEBSITE_LOCAL_DIR_LOCATION>;
+    index index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+Note: this is a very bare-bones configuration. Other security measures may be added to enhance the security of the website at configuration level. 
+
+### Configuring ssl
+
+Install `certbot` to deal with obtaining an ssl certificate
+
+```bash
+sudo apt update
+sudo apt install certbot python3-certbot-nginx
+```
+
+Then, run `certbot`:
+
+```bash
+sudo certbot --nginx
+```
+
+Now you have a secure(ish) website to play around with! 
+
 ## Website configuration
+
+1. Install hardware according to the documentation in the `esp8266` directory
+1. Change the script `python/subscribe.py` to match the `MQTT` message names you set on the esp8266 devices. Follow steps below to launch this script in production. 
+1. Update the configuration in `website/config/plants-config.json`
 
 ## Running python services for website support
 
@@ -88,12 +191,3 @@ You can check everything is running with
 journalctl -u piwebsite-api -f
 journalctl -u mqtt-subscriber -f
 ```
-
-## Setting up sensors
-
-
-
-
-
-
-
