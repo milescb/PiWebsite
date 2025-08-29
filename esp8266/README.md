@@ -15,7 +15,7 @@ In future iterations this will be a registered package you can install through t
 ### Software
 
 - Arduino IDE
-- ESP8266 board software and drivers
+- ESP8266 board software and drivers (I use the NodeMCU dev board)
 
 ## Wiring the device
 
@@ -43,6 +43,8 @@ In future iterations this will be a registered package you can install through t
 Connect the capacitive moisture sensors to any of the I/O channels of the multiplexer as well as ground and 3.3v as appropriate. 
 
 ## Configuration
+
+First, you'll need the board information for `Arduino`. In preferences of the Arduino IDE, in the additional board manager URLs, add the link `http://arduino.esp8266.com/stable/package_esp8266com_index.json`. Then, select the appropriate dev board. I use the `NodeMCU 1.0 (ESP-12E Module)`. You'll also need the `PubSubClient`, `DHT sensor library`, and the `ESP8266WiFi` libraries, so install these in the library manager. Now, we can configure the proper scripts!
 
 In ArduinoIDE, modify something like the below script to your specifications:
 
