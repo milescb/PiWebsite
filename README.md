@@ -1,6 +1,6 @@
 # Home Environement and Plant Monitor
 
-This repository contains the code used to host [rain.crabdance.com](https://rain.crabdance.com/), a home environment and plant moisture monitoring system. The following contains instructions on how to get your own website running!
+This repository contains the code used to host [rain.crabdance.com](https://rain.crabdance.com/), a home environment and plant moisture monitoring system. The following contains instructions on how to get your own website running! If you would like the original instructions I made for hosting on a Raspberry Pi Zero 2w, visit the [info](https://rain.crabdance.com/pages/info.html) page of [rain.crabdance.com](https://rain.crabdance.com/). 
 
 ### Website Main Page
 
@@ -26,7 +26,17 @@ This repository contains the code used to host [rain.crabdance.com](https://rain
 	<em>Dark Mode</em>
 </p>
 
-## Setting up website server 
+## Website configuration
+
+First, clone this repostitory, then follow the steps below:
+
+1. Configure a website server to host your website, as detailed below. 
+2. Change the script `python/subscribe.py` to match the plants you have.
+3. Launch the `python` scripts to run the database API, and the MQTT server.
+4. Install hardware according to the documentation in the `esp8266` directory, and flash the appropraite software to your esp developement board, using the same name for plants you set in step 2. 
+5. Update the configuration in `website/config/plants-config.json` to match the plants you specified in step 2. 
+
+## Configuring a website server 
 
 I use `nginx` as the server engine. To install, run:
 
@@ -36,7 +46,7 @@ sudo systemctl start nginx
 sudo systemctl enable nginx
 ```
 
-### Configuring a Domain
+### Obtaining a Domain
 
 I used [FreeDNS](https://freedns.afraid.org) to obtain a free domain name and subdomain for my example website. To get this running, forward the http port (port 80), and the https port (port 443) on your home router. Then, obtain the IP address of your home router, and configure your selected subdomain with FreeDNS. You can then use this free url in the below configuration!
 
@@ -46,9 +56,9 @@ Exposing ports on your home internet can expose your device to attacks. In order
 
 Note: If you would like to avoid these security challenges or, for an easier setup, consider just hosting the website on localhost (only accessible when connected to your home wifi network)
 
-### `nginx` configuration
+### Configure website engine (`nginx`)
 
-To configure you website, open the file `/etc/nginx/sites-available/default` and replace the current content with the below code, changing `<YOUR_URL>` to the one selected above and `<WEBSITE_LOCAL_DIR_LOCATION>` to the local location you plan on hosting your site from.
+To configure you website, open the file `/etc/nginx/sites-available/default` and replace the current content with the below code, changing `<YOUR_URL>` to the one selected above and `<WEBSITE_LOCAL_DIR_LOCATION>` to the local location you plan on hosting your site from (the full path pointing to the `website` directory in this repository).
 
 ```
 server {
@@ -84,7 +94,7 @@ server {
 
 Note: this is a very bare-bones configuration. Other security measures may be added to enhance the security of the website at configuration level. 
 
-### Configuring ssl
+### Configure ssl
 
 Install `certbot` to deal with obtaining an ssl certificate
 
@@ -100,12 +110,6 @@ sudo certbot --nginx
 ```
 
 Now you have a secure(ish) website to play around with! 
-
-## Website configuration
-
-1. Install hardware according to the documentation in the `esp8266` directory
-1. Change the script `python/subscribe.py` to match the `MQTT` message names you set on the esp8266 devices. Follow steps below to launch this script in production. 
-1. Update the configuration in `website/config/plants-config.json`
 
 ## Running python services for website support
 
