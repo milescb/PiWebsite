@@ -1,8 +1,6 @@
 # ESP8266 Setup
 
-To obtain the code to configure your code with `Arduino`, install the [Arduino IDE](https://www.arduino.cc/en/software/) and copy `PlantMonitor` to `Arduino/Libraries` (often located in your `Documents` folder). 
-
-In future iterations this will be a registered package you can install through the `ArduinoIDE` interface directly. 
+To obtain the code to configure your code with `Arduino`, install the [Arduino IDE](https://www.arduino.cc/en/software/), navigate to the libraries tab, search for PlantMonitor, and install the latest version.
 
 ## Requirements
 
