@@ -5,24 +5,24 @@ This repository contains the code used to host [rain.crabdance.com](https://rain
 ### Website Main Page
 
 <p align="center">
-	<img src="examples/main.png" alt="Main Page" width="600"><br>
+	<img src=".github/main.png" alt="Main Page" width="600"><br>
 	<!-- <em>Main Page (Light Mode)</em> -->
 </p>
 
 <p align="center">
-	<img src="examples/history.png" alt="Moisture History Chart" width="600"><br>
+	<img src=".github/history.png" alt="Moisture History Chart" width="600"><br>
 	<!-- <em>Moisture History Chart Example</em> -->
 </p>
 
 ### Website Plants Page
 
 <p align="center">
-	<img src="examples/plants.png" alt="Plants Page" width="600"><br>
+	<img src=".github/plants.png" alt="Plants Page" width="600"><br>
 	<em>Light Mode</em>
 </p>
 
 <p align="center">
-	<img src="examples/plants_dark.png" alt="Plants Page Dark" width="600"><br>
+	<img src=".github/plants_dark.png" alt="Plants Page Dark" width="600"><br>
 	<em>Dark Mode</em>
 </p>
 
