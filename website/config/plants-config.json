@@ -1,107 +1,129 @@
 {
-  "apiConfig": {
-    "sensorHistoryUrl": "../api/sensor_data/history",
-    "updateInterval": 60000
-  },
-  "plants": [
-    {
-      "id": "spotted_begonia",
-      "name": "Spotted Begonia",
-      "commonName": "Spotted Begonia",
-      "scientificName": "Begonia Maculata",
-      "location": "Living Room",
-      "waterThreshold": 20,
-      "image": "../images/begonia.jpg",
-      "dataUrl": "../json/moisture_spotted_begonia.json",
-      "storageKey": "lastWatered_begonia"
+    "apiConfig": {
+        "sensorHistoryUrl": "../api/sensor_data/history",
+        "updateInterval": 60000
     },
-    {
-      "id": "prayer_plant",
-      "name": "Prayer Plant",
-      "commonName": "Prayer Plant",
-      "scientificName": "Maranta leuconeura",
-      "location": "Living Room",
-      "waterThreshold": 60,
-      "image": "../images/prayer_plant.jpg",
-      "dataUrl": "../json/moisture_prayer_plant.json",
-      "storageKey": "lastWatered_prayer"
-    },
-    {
-      "id": "norfolk_pine",
-      "name": "Norfolk Pine",
-      "commonName": "Norfolk Pine",
-      "scientificName": "Araucaria heterophylla",
-      "location": "Living Room",
-      "waterThreshold": 40,
-      "image": "../images/norfolk_pine.jpg",
-      "dataUrl": "../json/moisture_norfolk_pine.json",
-      "storageKey": "lastWatered_pine"
-    },
-    {
-      "id": "arrowhead_plant",
-      "name": "Pink Syngonium",
-      "commonName": "Pink Syngonium",
-      "scientificName": "Syngonium podophyllum",
-      "location": "Living Room",
-      "waterThreshold": 40,
-      "image": "../images/pink_arrow.jpeg",
-      "dataUrl": "../json/moisture_arrowhead_plant.json",
-      "storageKey": "lastWatered_arrow"
-    },
-    {
-      "id": "snake_plant",
-      "name": "Snake Plant",
-      "commonName": "Snake Plant",
-      "scientificName": "Dracaena Trifasciata",
-      "location": "Bedroom",
-      "waterThreshold": 45,
-      "image": "../images/snake_plant.png",
-      "dataUrl": "../json/moisture_snake_plant.json",
-      "storageKey": "lastWatered_snake_plant"
-    },
-    {
-      "id": "asparagus_fern",
-      "name": "Asparagus Fern",
-      "commonName": "Asparagus Fern",
-      "scientificName": "Asparagus Densiflorus",
-      "location": "Bedroom",
-      "waterThreshold": 30,
-      "image": "../images/asparagus.jpg",
-      "dataUrl": "../json/moisture_asparagus_fern.json",
-      "storageKey": "lastWatered_fern"
-    },
-    {
-      "id": "jade_plant",
-      "name": "Jade Plant",
-      "commonName": "Jade Plant",
-      "scientificName": "Crassula Ovata",
-      "location": "Bedroom",
-      "waterThreshold": 15,
-      "image": "../images/jade.jpg",
-      "dataUrl": "../json/moisture_jade_plant.json",
-      "storageKey": "lastWatered_jade"
-    },
-    {
-      "id": "rubber_plant",
-      "name": "Rubber Plant",
-      "commonName": "Pink Rubber Tree",
-      "scientificName": "Ficus Elastica Belize",
-      "location": "Bedroom",
-      "waterThreshold": 50,
-      "image": "../images/rubber.jpg",
-      "dataUrl": "../json/moisture_rubber_plant.json",
-      "storageKey": "lastWatered_rubber"
-    },
-    {
-      "id": "nanouk",
-      "name": "Fantasy Venice",
-      "commonName": "Fantasy Venice",
-      "scientificName": "Tradescantia albiflora 'Nanouk'",
-      "location": "Bedroom",
-      "waterThreshold": 40,
-      "image": "../images/nanouk.jpg",
-      "dataUrl": "../json/moisture_nanouk.json",
-      "storageKey": "lastWatered_nanouk"
-    }
-  ]
+    "plants": [
+        {
+            "id": "spotted_begonia",
+            "name": "Spotted Begonia",
+            "commonName": "Spotted Begonia",
+            "scientificName": "Begonia Maculata",
+            "location": "Living Room Bookshelf",
+            "waterThreshold": 20,
+            "image": "../images/begonia.jpg",
+            "dataUrl": "../json/moisture_spotted_begonia.json",
+            "storageKey": "lastWatered_begonia"
+        },
+        {
+            "id": "prayer_plant",
+            "name": "Prayer Plant",
+            "commonName": "Lemon Lime Prayer Plant",
+            "scientificName": "Maranta leuconeura",
+            "location": "Living Room Bookshelf",
+            "waterThreshold": 60,
+            "image": "../images/prayer_plant.jpg",
+            "dataUrl": "../json/moisture_prayer_plant.json",
+            "storageKey": "lastWatered_prayer"
+        },
+        {
+            "id": "pink_prayer_plant",
+            "name": "Prayer Plant",
+            "commonName": "Pinstripe Prayer Plant",
+            "scientificName": "Goeppertia ornata",
+            "location": "Living Room Bookshelf",
+            "waterThreshold": 60,
+            "image": "../images/pink_prayer.jpg",
+            "dataUrl": "../json/moisture_pink_prayer_plant.json",
+            "storageKey": "lastWatered_prayer"
+        },
+        {
+            "id": "myrtle_tree",
+            "name": "Myrtle Topiary",
+            "commonName": "Myrtle Topiary",
+            "scientificName": "Myrtus communis",
+            "location": "Living Room Bookshelf",
+            "waterThreshold": 40,
+            "image": "../images/myrtle.jpg",
+            "dataUrl": "../json/moisture_myrtle_tree.json",
+            "storageKey": "lastWatered_myrtle"
+        },
+        {
+            "id": "pink_nerve",
+            "name": "Pink Anne Nerve Plant",
+            "commonName": "Pink Anne Nerve Plant",
+            "scientificName": "Fittonia albivenis",
+            "location": "Living Room Bookshelf",
+            "waterThreshold": 25,
+            "image": "../images/nerve.jpg",
+            "dataUrl": "../json/moisture_pink_nerve.json",
+            "storageKey": "lastWatered_nerve"
+        },
+        {
+            "id": "red_kiss_begonia",
+            "name": "Red Kiss Begonia",
+            "commonName": "Red Kiss Begonia",
+            "scientificName": "Begonia rex-cultorum",
+            "location": "Living Room Bookshelf",
+            "waterThreshold": 40,
+            "image": "../images/red_kiss.jpeg",
+            "dataUrl": "../json/moisture_red_kiss_begonia.json",
+            "storageKey": "lastWatered_redKiss"
+        },
+               {
+            "id": "purple_shield",
+            "name": "Purple Shield",
+            "commonName": "Purple Shield",
+            "scientificName": "Strobilanthes dyerianus",
+            "location": "Bedroom",
+            "waterThreshold": 40,
+            "image": "../images/purple_shield.jpg",
+            "dataUrl": "../json/moisture_purple_shield.json",
+            "storageKey": "lastWatered_purpleShield"
+        },
+        {
+            "id": "bird_nest",
+            "name": "Bird's Nest Fern",
+            "commonName": "Bird's Nest Fern",
+            "scientificName": "Asplenium nidus",
+            "location": "Bedroom",
+            "waterThreshold": 50,
+            "image": "../images/bird_nest.jpg",
+            "dataUrl": "../json/moisture_bird_nest.json",
+            "storageKey": "lastWatered_birdNest"
+        },
+        {
+            "id": "alo",
+            "name": "Aloe Vera",
+            "commonName": "Aloe Vera",
+            "scientificName": "Aloe vera (L.) Burm.f.",
+            "location": "Bedroom",
+            "waterThreshold": 15,
+            "image": "../images/aloe.jpg",
+            "dataUrl": "../json/moisture_alo.json",
+            "storageKey": "lastWatered_alo"
+        },
+        {
+            "id": "norfolk_pine",
+            "name": "Norfolk Island Pine",
+            "commonName": "Norfolk Island Pine",
+            "scientificName": "Araucaria heterophylla",
+            "location": "Bedroom",
+            "waterThreshold": 45,
+            "image": "../images/norfolk_pine.jpg",
+            "dataUrl": "../json/moisture_norfolk_pine.json",
+            "storageKey": "lastWatered_norfolk"
+        },
+        {
+            "id": "jade_plant",
+            "name": "Jade Plant",
+            "commonName": "Jade Plant",
+            "scientificName": "Crassula ovata",
+            "location": "Bedroom",
+            "waterThreshold": 20,
+            "image": "../images/jade_plant.jpg",
+            "dataUrl": "../json/moisture_jade_plant.json",
+            "storageKey": "lastWatered_jade"
+        }
+    ]
 }
