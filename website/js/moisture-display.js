@@ -67,7 +67,8 @@ async function fetchPlantData(plant) {
     try {
         const data = await fetchSensorData(plant.dataUrl);
         if (data && data.moisture !== undefined) {
-            document.getElementById(plant.id).textContent = Math.round(data.moisture.toFixed(1));
+            document.getElementById(plant.id).textContent = Math.round(data.moisture);
+            console.log(`Fetched data for ${plant.name}: ${data.moisture} at ${formatDateTime(new Date(data.timestamp))}`);
             document.getElementById(`last-updated-${plant.id}`).textContent = 
                 `Last updated: ${formatShortDateTime(new Date(data.timestamp))}`;
         } else {

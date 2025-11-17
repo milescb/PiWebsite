@@ -10,7 +10,7 @@
             "commonName": "Spotted Begonia",
             "scientificName": "Begonia Maculata",
             "location": "Living Room Bookshelf",
-            "waterThreshold": 20,
+            "waterThreshold": 50,
             "image": "../images/begonia.jpg",
             "dataUrl": "../json/moisture_spotted_begonia.json",
             "storageKey": "lastWatered_begonia"
@@ -21,7 +21,7 @@
             "commonName": "Lemon Lime Prayer Plant",
             "scientificName": "Maranta leuconeura",
             "location": "Living Room Bookshelf",
-            "waterThreshold": 60,
+            "waterThreshold": 40,
             "image": "../images/prayer_plant.jpg",
             "dataUrl": "../json/moisture_prayer_plant.json",
             "storageKey": "lastWatered_prayer"
@@ -32,7 +32,7 @@
             "commonName": "Pinstripe Prayer Plant",
             "scientificName": "Goeppertia ornata",
             "location": "Living Room Bookshelf",
-            "waterThreshold": 60,
+            "waterThreshold": 50,
             "image": "../images/pink_prayer.jpg",
             "dataUrl": "../json/moisture_pink_prayer_plant.json",
             "storageKey": "lastWatered_prayer"
@@ -43,7 +43,7 @@
             "commonName": "Myrtle Topiary",
             "scientificName": "Myrtus communis",
             "location": "Living Room Bookshelf",
-            "waterThreshold": 40,
+            "waterThreshold": 30,
             "image": "../images/myrtle.jpg",
             "dataUrl": "../json/moisture_myrtle_tree.json",
             "storageKey": "lastWatered_myrtle"
@@ -54,7 +54,7 @@
             "commonName": "Pink Anne Nerve Plant",
             "scientificName": "Fittonia albivenis",
             "location": "Living Room Bookshelf",
-            "waterThreshold": 25,
+            "waterThreshold": 15,
             "image": "../images/nerve.jpg",
             "dataUrl": "../json/moisture_pink_nerve.json",
             "storageKey": "lastWatered_nerve"
@@ -70,13 +70,13 @@
             "dataUrl": "../json/moisture_red_kiss_begonia.json",
             "storageKey": "lastWatered_redKiss"
         },
-               {
+        {
             "id": "purple_shield",
             "name": "Purple Shield",
             "commonName": "Purple Shield",
             "scientificName": "Strobilanthes dyerianus",
             "location": "Bedroom",
-            "waterThreshold": 40,
+            "waterThreshold": 45,
             "image": "../images/purple_shield.jpg",
             "dataUrl": "../json/moisture_purple_shield.json",
             "storageKey": "lastWatered_purpleShield"
@@ -91,17 +91,6 @@
             "image": "../images/bird_nest.jpg",
             "dataUrl": "../json/moisture_bird_nest.json",
             "storageKey": "lastWatered_birdNest"
-        },
-        {
-            "id": "alo",
-            "name": "Aloe Vera",
-            "commonName": "Aloe Vera",
-            "scientificName": "Aloe vera (L.) Burm.f.",
-            "location": "Bedroom",
-            "waterThreshold": 15,
-            "image": "../images/aloe.jpg",
-            "dataUrl": "../json/moisture_alo.json",
-            "storageKey": "lastWatered_alo"
         },
         {
             "id": "norfolk_pine",
@@ -120,10 +109,21 @@
             "commonName": "Jade Plant",
             "scientificName": "Crassula ovata",
             "location": "Bedroom",
-            "waterThreshold": 20,
+            "waterThreshold": 25,
             "image": "../images/jade_plant.jpg",
             "dataUrl": "../json/moisture_jade_plant.json",
             "storageKey": "lastWatered_jade"
+        },
+                {
+            "id": "alo",
+            "name": "Aloe Vera",
+            "commonName": "Aloe Vera",
+            "scientificName": "Aloe vera (L.) Burm.f.",
+            "location": "Bedroom",
+            "waterThreshold": 25,
+            "image": "../images/aloe.jpg",
+            "dataUrl": "../json/moisture_alo.json",
+            "storageKey": "lastWatered_alo"
         }
     ]
 }
