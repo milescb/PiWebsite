@@ -71,7 +71,7 @@ function createPlantCard(plant) {
     
     // Create hidden heading for accessibility
     const heading = document.createElement('h3');
-    heading.id = plant.id.replace('_', '-');
+    heading.id = `heading-${plant.id}`;
     heading.className = 'visually-hidden';
     heading.textContent = plant.commonName;
     
@@ -103,8 +103,8 @@ function createPlantCard(plant) {
         <div class="section plot-section">
             <div id="plot-${plant.id}" class="plot"></div>
         </div>
-    `;
-    
+    `;  
+
     // Create a container div that includes both the heading and card
     const container = document.createElement('div');
     container.appendChild(heading);

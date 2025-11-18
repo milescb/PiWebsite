@@ -114,7 +114,7 @@
             "dataUrl": "../json/moisture_jade_plant.json",
             "storageKey": "lastWatered_jade"
         },
-                {
+        {
             "id": "alo",
             "name": "Aloe Vera",
             "commonName": "Aloe Vera",
