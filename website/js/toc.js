@@ -167,7 +167,7 @@ function initializeTableOfContents() {
             if (!document.querySelector('.dropdown')) {
                 createTableOfContents();
             }
-        }, 300); // 1/2 second timeout as fallback
+        }, 600); // 1 second timeout as fallback
     } else {
         // No markdown content, create TOC immediately
         setTimeout(createTableOfContents, 50);

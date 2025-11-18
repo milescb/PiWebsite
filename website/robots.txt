@@ -1,15 +1,18 @@
 User-agent: *
 Allow: /
+Allow: /config/
+Allow: /content/
 Allow: /css/
 Allow: /js/
-Allow: /images/
 Allow: /pages/
-Disallow: /api/
-Disallow: /data/
 
 # Prevent access to data files
 Disallow: /*.json$
 Disallow: /*.csv$
+Disallow: /*.png$
+Disallow: /*.jpeg$
+Disallow: /*.jpg$
+Disallow: /*.mp4$
 
 # Add reasonable crawl delay
 Crawl-delay: 10
