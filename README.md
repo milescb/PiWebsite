@@ -1,6 +1,6 @@
 # Home Environement and Plant Monitor
 
-This repository contains the code used to host [rain.crabdance.com](https://rain.crabdance.com/), a home environment and plant moisture monitoring system. The following contains instructions on how to get your own website running! If you would like the original instructions I made for hosting on a Raspberry Pi Zero 2w, visit the [info](https://rain.crabdance.com/pages/info.html) page of [rain.crabdance.com](https://rain.crabdance.com/). 
+This repository contains the code used to host [crabdance.milescb.com](https://crabdance.milescb.com/), a home environment and plant moisture monitoring system. The following contains instructions on how to get your own website running! If you would like the original instructions I made for hosting on a Raspberry Pi Zero 2w, visit the [info](https://crabdance.milescb.com/pages/info.html) page of [crabdance.milescb.com](https://crabdance.milescb.com/). 
 
 ### Website Main Page
 
@@ -52,9 +52,11 @@ I used [FreeDNS](https://freedns.afraid.org) to obtain a free domain name and su
 
 #### Warning!
 
-Exposing ports on your home internet can expose your device to attacks. In order to mitigate risks, ensure ssh is only enabled through ssh keys and do not forward port 22. Additionally, installing `fail2ban` and configuring a jail for the forwarded ports, as well as creating a firewall, for instance with `ufw`, provide additional security. I would also recommend additionally security measures, and understand all risks associated with port forwarding.  
+Exposing ports on your home internet can expose your device to attacks. In order to mitigate risks, ensure ssh is only enabled through ssh keys and do not forward port 22. Additionally, installing `fail2ban` and configuring a jail for the forwarded ports, as well as creating a firewall, for instance with `ufw`, provide additional security. I would also recommend additionally security measures, and understand all risks associated with port forwarding. 
 
-Note: If you would like to avoid these security challenges or, for an easier setup, consider just hosting the website on localhost (only accessible when connected to your home wifi network)
+#### Cloudflare solution to avoid port forwarding
+
+Another option is to purchase a domain, for instance on [cloudflare](https://www.cloudflare.com/products/registrar/). Then, set up [cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) on the server and configure the DNS registry to point to this tunnel. The rest of the setup remains the same (although `certbot` configuration is no longer nececcary, and the website configuration should not redict HTTP to HTTPS). 
 
 ### Configure website engine (`nginx`)
 
@@ -92,9 +94,9 @@ server {
 }
 ```
 
-Note: this is a very bare-bones configuration. Other security measures may be added to enhance the security of the website at configuration level. 
+Note: this is a very bare-bones configuration. Other security measures may be added to enhance the security of the website at configuration level. In the case of the cloudflare solution, remove the first redirect block, and only listen on the 80 port.  
 
-### Configure ssl
+### Configure ssl (optional)
 
 Install `certbot` to deal with obtaining an ssl certificate
 
