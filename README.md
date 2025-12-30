@@ -46,17 +46,17 @@ sudo systemctl start nginx
 sudo systemctl enable nginx
 ```
 
-### Obtaining a Domain
+### Obtaining a free domain
 
-I used [FreeDNS](https://freedns.afraid.org) to obtain a free domain name and subdomain for my example website. To get this running, forward the http port (port 80), and the https port (port 443) on your home router. Then, obtain the IP address of your home router, and configure your selected subdomain with FreeDNS. You can then use this free url in the below configuration!
+One way to expose your website to the outside world is to use [FreeDNS](https://freedns.afraid.org) to obtain a free domain name and subdomain. To get this running, forward the http port (port 80), and the https port (port 443) on your home router. Then, obtain the IP address of your home router, and configure your selected subdomain with FreeDNS. You can then use this free url in the below configuration!
 
 #### Warning!
 
 Exposing ports on your home internet can expose your device to attacks. In order to mitigate risks, ensure ssh is only enabled through ssh keys and do not forward port 22. Additionally, installing `fail2ban` and configuring a jail for the forwarded ports, as well as creating a firewall, for instance with `ufw`, provide additional security. I would also recommend additionally security measures, and understand all risks associated with port forwarding. 
 
-#### Cloudflare solution to avoid port forwarding
+### Using `Cloudflare` for increased security
 
-Another option is to purchase a domain, for instance on [cloudflare](https://www.cloudflare.com/products/registrar/). Then, set up [cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) on the server and configure the DNS registry to point to this tunnel. The rest of the setup remains the same (although `certbot` configuration is no longer nececcary, and the website configuration should not redict HTTP to HTTPS). 
+Another option is to purchase a domain, for instance on [cloudflare](https://www.cloudflare.com/products/registrar/). Then, set up [cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) on the server and configure the DNS registry to point to this tunnel as in the [cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/) documentation. The rest of the setup remains the same (although `certbot` configuration is no longer nececcary, and the website configuration should not redict HTTP to HTTPS). 
 
 ### Configure website engine (`nginx`)
 
@@ -111,9 +111,9 @@ Then, run `certbot`:
 sudo certbot --nginx
 ```
 
-Now you have a secure(ish) website to play around with! 
+Now you have a secure(ish) website to play around with! Note that this is only necessary if using a free domain. 
 
-## Running python services for website support
+## Running `python` services for website support
 
 To create the `python` environment, run
 
@@ -135,7 +135,8 @@ python subscribe.py
 ```
 and run the API to query the database in the background
 ```
-gunicorn --bind 0.0.0.0:5000 --worker-class gevent --max-requests 1000 --timeout 30 sqlite_api:app
+gunicorn --bind 0.0.0.0:5000 --worker-class gevent \
+	--max-requests 1000 --timeout 30 sqlite_api:app
 ```
 
 ### Running Processes with `systemd`
