@@ -170,7 +170,7 @@ function initializeTableOfContents() {
         }, 600); // 1 second timeout as fallback
     } else {
         // No markdown content, create TOC immediately
-        setTimeout(createTableOfContents, 50);
+        setTimeout(createTableOfContents, 300);
     }
 }
 

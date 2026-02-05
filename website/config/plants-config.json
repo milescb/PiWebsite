@@ -10,19 +10,19 @@
             "commonName": "Spotted Begonia",
             "scientificName": "Begonia Maculata",
             "location": "Living Room Bookshelf",
-            "waterThreshold": 50,
+            "waterThreshold": 30,
             "image": "../images/begonia.jpg",
             "dataUrl": "../json/moisture_spotted_begonia.json",
             "storageKey": "lastWatered_begonia"
         },
         {
             "id": "prayer_plant",
-            "name": "Prayer Plant",
-            "commonName": "Lemon Lime Prayer Plant",
-            "scientificName": "Maranta leuconeura",
+            "name": "Swiss Cheese Vine",
+            "commonName": "Swiss Cheese Vine",
+            "scientificName": "Monstera adansonii",
             "location": "Living Room Bookshelf",
             "waterThreshold": 40,
-            "image": "../images/prayer_plant.jpg",
+            "image": "../images/swiss_cheese.jpg",
             "dataUrl": "../json/moisture_prayer_plant.json",
             "storageKey": "lastWatered_prayer"
         },
@@ -76,7 +76,7 @@
             "commonName": "Purple Shield",
             "scientificName": "Strobilanthes dyerianus",
             "location": "Bedroom",
-            "waterThreshold": 45,
+            "waterThreshold": 70,
             "image": "../images/purple_shield.jpg",
             "dataUrl": "../json/moisture_purple_shield.json",
             "storageKey": "lastWatered_purpleShield"

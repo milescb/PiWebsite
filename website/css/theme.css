@@ -7,6 +7,7 @@
     --header-text: #ffd1e7;
     --title-text: #cf327b;
     --accent-color: #d56097;
+    --focus-color: #bd0259;
     --sensor-card-bg: #cddfcfdc;
     --sensor-reading-bg: rgba(255, 255, 255, 0.5);
     --chart-bg: #f9f9f9;
@@ -47,6 +48,7 @@
         --header-text: #ffd1e7;
         --title-text: #ffd1e7;
         --accent-color: #72a178;
+	--focus-color: #72a178;
         --sensor-card-bg: #3d4d40;
         --sensor-reading-bg: rgba(0, 0, 0, 0.2);
         --chart-bg: #2d2d2d;
